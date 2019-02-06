@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Coverflow from 'react-coverflow';
+import _ from 'lodash';
 //import openSocket from 'socket.io-client';
+import './App.css'
+import MainCarousel from './components/MainCarousel/MainCarousel';
+import TeamCover from './components/TeamCover/TeamCover';
+import {dummyApi} from './api/dummy'
+import { fmtMSS } from './utils';
 
 class App extends Component {
   constructor(props) {
@@ -10,52 +13,69 @@ class App extends Component {
     this.state = {
       teams: [],
       //socket: openSocket('ws://demos.kaazing.com/echo'),
-      time: 60
+      time: 60,
+      currentIndex: 0,
+      window: {
+        height: 0,
+        width: 0
+      },
+      paused: false
     }
   }
 
-  fn = () => console.log("hi")
+  back = () => this.setState(state => (state.currentIndex > 0 ? { currentIndex: state.currentIndex - 1 } : { currentIndex: state.currentIndex }))
+  next = () => this.setState(state => (state.currentIndex < state.teams.length - 1 ? { currentIndex: state.currentIndex + 1 } : { currentIndex: state.currentIndex }))
+  reset = () => this.setState(state => ({currentIndex: 0 }))
 
-  handleMessage = () => {
+  componentDidMount = () => {
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
+    this.setState({
+      teams: dummyApi,
+      window : { width: window.innerWidth, height: window.innerHeight }
+    })
   }
 
-  sendMessage = () => {
-
+  componentWillUnmount = () => {
+    window.removeEventListener('resize', this.updateWindowDimensions);
+  }
+  
+  updateWindowDimensions = () => {
+    this.setState({ window : { width: window.innerWidth, height: window.innerHeight }});
   }
 
+  handlePlayPauseClick = () => this.setState((state) => ({ paused: !state.paused}))
 
   render() {
+    const {teams, currentIndex, window, paused, time } = this.state;
+    const activeTeam = teams.find(team => team.id === currentIndex)
+    if (!activeTeam) return <div>LOADING</div>;
     return (
       <div className="App">
-          <Coverflow width="960" height="500"
-            displayQuantityOfSide={2}
-            navigation={true}
-            enableScroll={false}
-            clickable={true}
-            active={0}
+            <MainCarousel 
+            slideIndex={currentIndex}
+            window={window}
           >
-        <div
-          onClick={() => this.fn()}
-          onKeyDown={() => this.fn()}
-          role="menuitem"
-          tabIndex="0"
-        >
-          <img
-            src='image/path'
-            alt='title or description'
-            style={{
-              display: 'block',
-              width: '100%',
-            }}
-          />
+              {
+                _.map(teams, (team) => (
+                  <TeamCover team={team} key={team.name} />
+                ))
+              }
+          </MainCarousel>
+        <div className="timer justify-center">
+            <h1>{fmtMSS(time)}</h1>
         </div>
-        <img src='image/path' alt='title or description' data-action="http://andyyou.github.io/react-coverflow/"/>
-        <img src='image/path' alt='title or description' data-action="http://andyyou.github.io/react-coverflow/"/>
-      </Coverflow>
-      <button onClick={this.sendMessage}> SUBMIT </button>
-    </div>
+        <div className="justify-center buttons">
+          <button className={`pause-btn ${paused ? "paused" : ""}`} onClick={this.handlePlayPauseClick} />
+        </div>
+        <button style={{position: 'absolute', top: '20%'}} onClick={this.next}>NEXT</button>
+        <button style={{position: 'absolute', top: '25%'}} onClick={this.back}>BACK</button>
+        <button style={{position: 'absolute', top: '30%'}} onClick={this.reset}>RESET</button>
+      </div>
     );
   }
 }
+// TODO: Add svg circle timer
+// const PosedSvg = posed.svg({})
 
 export default App;

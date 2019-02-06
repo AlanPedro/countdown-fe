@@ -1,0 +1,8 @@
+.team-cover {
+    /* Width determind in js style object */
+    align-self: flex-end;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: absolute;
+}

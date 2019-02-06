@@ -1,32 +1,149 @@
 .App {
-  text-align: center;
+    display: grid;
+    grid-template-areas: 
+    "main"
+    "time"
+    "button"
+    ;
+    grid-template-rows: 40% 15% 30%;
+    grid-row-gap: 5%;
+    height: 100vh;
+    background: #F2F2F5;
+    overflow: hidden;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
+.main-display-wrapper {
+    box-sizing: content-box;
+    position: relative;
+    height: 100%;
+    width: inherit;
+ }
+
+ .main-display {
+    display: flex;
+    height: 100%;
+    flex-wrap: nowrap;
+    position: absolute;
+    width: 100vw;
+    left: 42vw;
+ }
+
+ .timer {
+     align-self: center;
+ }
+
+ .timer h1 {
+     font-size: 2em;
+     margin: 0;
+     border: 1px solid #202020;
+     padding: 5px 15px;
+     border-radius: 5px;
+ }
+
+ .buttons {
+    display: flex;
+    flex-direction: column;
+ }
+
+.justify-center {
+    justify-self: center;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+h1 {
+    font-size: 1em;
+}
+h2 {
+    font-size: 0.8em;
+}
+h3 {
+    font-size: 0.6em;
 }
 
-.App-link {
-  color: #61dafb;
+.circle {
+    border-radius: 50%;
+    height: 70px;
+    width: 70px;
+    border: solid 8px white;
+    text-align: center;
+    overflow: hidden;
+    background: transparent;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.circle img {
+    height: 80px
+}
+
+.pause-btn {
+    border: 0;
+    background: transparent;
+    box-sizing: border-box;
+    width: 0;
+    height: 74px;
+    border-color: transparent transparent transparent #202020;
+    transition: 100ms all ease;
+    cursor: pointer;
+    border-style: solid;
+    border-width: 37px 0 37px 60px;
+    padding: 0;
+}
+
+.pause-btn.paused {
+border-style: double;
+border-width: 0px 0 0px 60px;
+}
+
+.pause-btn:hover {
+border-color: transparent transparent transparent #404040;
+}
+
+.center {
+    text-align: center;
+}
+
+@media(min-width: 850px) {
+    /* .App {
+        display: grid;
+        grid-template-areas: 
+        "main"
+        "timer"
+        "button"
+        ;
+    } */
+    
+    h1 {
+        font-size: 2em;
+    }
+    h2 {
+        font-size: 1.6em;
+    }
+    h3 {
+        font-size: 1.2em;
+    }
+    
+    .circle {
+        border-radius: 50%;
+        height: 150px;
+        width: 150px;
+        border: solid 8px white;
+        text-align: center;
+        overflow: hidden;
+        background: transparent;
+    }
+    
+    .circle img {
+        height: 165px
+    }
+
+    .pause-btn {
+        height: 150px;
+        border-width: 75px 0 75px 125px;
+    }
+    .pause-btn.paused {
+        border-width: 0px 0 0px 100px;
+    }
+
+    .timer h1 {
+        font-size: 4em;
+        padding: 10px 25px;
+    }
 }
