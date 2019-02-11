@@ -2,8 +2,9 @@
   "name": "countdown-fe",
   "version": "0.1.0",
   "private": true,
-  "homepage" : "https://alanpedro.github.io/countdown-fe/",
+  "homepage": "https://alanpedro.github.io/countdown-fe/",
   "dependencies": {
+    "gh-pages": "^2.0.1",
     "lodash": "^4.17.11",
     "node-sass": "^4.11.0",
     "prop-types": "^15.7.0",
