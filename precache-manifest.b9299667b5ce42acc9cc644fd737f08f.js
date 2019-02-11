@@ -20,7 +20,7 @@ self.__precacheManifest = [
     "url": "/countdown-fe/static/css/main.021a3ef3.chunk.css"
   },
   {
-    "revision": "e3a2cf120fd48ff08ffccd5e6133b50a",
+    "revision": "c5bffbf7a49195d6483dc328cead7733",
     "url": "/countdown-fe/index.html"
   }
 ];
