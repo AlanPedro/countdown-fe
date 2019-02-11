@@ -1,4 +1,4 @@
-export const dummyApi = [
+const dummyParticipants = [
     {
       id: 0,
       name: "EUA",
@@ -140,5 +140,10 @@ export const dummyApi = [
             role: "Developer"
         }
     ]
-    }
-  ]
+  }
+]
+
+export const dummyApi = {
+  name: "Access UK Main Standup",
+  participants: dummyParticipants
+}

@@ -2,14 +2,21 @@
   "name": "countdown-fe",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://myname.github.io/myapp",
   "dependencies": {
+    "gh-pages": "^2.0.1",
     "lodash": "^4.17.11",
     "node-sass": "^4.11.0",
+    "prop-types": "^15.7.0",
     "react": "^16.7.0",
     "react-coverflow": "^0.2.18",
     "react-dom": "^16.7.0",
     "react-pose": "^4.0.6",
+    "react-redux": "^6.0.0",
     "react-scripts": "2.1.3",
+    "redux": "^4.0.1",
+    "redux-logger": "^3.0.6",
+    "redux-promise": "^0.6.0",
     "socket.io-client": "^2.2.0"
   },
   "scripts": {

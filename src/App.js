@@ -1,76 +1,97 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import {connect} from 'react-redux';
 //import openSocket from 'socket.io-client';
 import './App.css'
 import MainCarousel from './components/MainCarousel/MainCarousel';
 import TeamCover from './components/TeamCover/TeamCover';
-import {dummyApi} from './api/dummy'
-import { fmtMSS } from './utils';
+import PlayPause from './components/PlayPause/PlayPause'
+import Timer from './components/Timer/Timer'
+import { INIT_STANDUP } from './actions';
+import { STANDUP_TIME } from './config/constants';
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      teams: [],
-      //socket: openSocket('ws://demos.kaazing.com/echo'),
-      time: 60,
+      time: STANDUP_TIME,
       currentIndex: 0,
       window: {
         height: 0,
         width: 0
       },
-      paused: false
+      paused: true
+      //socket: openSocket('ws://demos.kaazing.com/echo'),
     }
   }
 
-  back = () => this.setState(state => (state.currentIndex > 0 ? { currentIndex: state.currentIndex - 1 } : { currentIndex: state.currentIndex }))
-  next = () => this.setState(state => (state.currentIndex < state.teams.length - 1 ? { currentIndex: state.currentIndex + 1 } : { currentIndex: state.currentIndex }))
-  reset = () => this.setState(state => ({currentIndex: 0 }))
+  reset = () => this.setState(state => ({currentIndex: 0, time: STANDUP_TIME }))
+  next = () => this.setState(state => ({ currentIndex: state.currentIndex + 1, time: STANDUP_TIME }))
 
   componentDidMount = () => {
     this.updateWindowDimensions();
     window.addEventListener('resize', this.updateWindowDimensions);
-    this.setState({
-      teams: dummyApi,
-      window : { width: window.innerWidth, height: window.innerHeight }
-    })
   }
 
   componentWillUnmount = () => {
     window.removeEventListener('resize', this.updateWindowDimensions);
+    window.clearInterval(this.timerInterval)
   }
   
   updateWindowDimensions = () => {
     this.setState({ window : { width: window.innerWidth, height: window.innerHeight }});
   }
 
-  handlePlayPauseClick = () => this.setState((state) => ({ paused: !state.paused}))
+  completeTimer = () => {
+    window.clearInterval(this.timerInterval)
+    this.setState({time: 0, paused: true})
+  }
+
+  handleSecondTick = () => {
+    // this.state.time is behind by 1 second due to the way setInterval works
+    const time = this.state.time - 1;
+    const isNext = this.state.currentIndex < this.props.standup.participants.length - 1;
+    if (time === - 1 && isNext) {
+        this.setState((state) => ({ time: STANDUP_TIME, currentIndex: this.state.currentIndex + 1 }))
+    } else if (time === -1 && !isNext) { 
+      this.completeTimer()
+    } else {
+      this.setState((state) => ({ time: state.time - 1 }))
+    }
+  }
+
+  handlePlayPauseClick = () => {
+    if (this.state.paused) {
+      this.timerInterval = window.setInterval(this.handleSecondTick, 1000)
+    } else {
+      window.clearInterval(this.timerInterval)
+    }
+    this.setState((state) => ({ paused: !state.paused}))
+  }
 
   render() {
-    const {teams, currentIndex, window, paused, time } = this.state;
-    const activeTeam = teams.find(team => team.id === currentIndex)
-    if (!activeTeam) return <div>LOADING</div>;
+    const { currentIndex, window, paused, time } = this.state;
+    const { standup } = this.props;
+    if (_.isEmpty(standup)) return <button style={{ border: "black solid 1px", fontSize: "100px", width: "50%" }} onClick={this.props.startStandup}>START</button>;
+    const { participants } = standup
+    const isNext = currentIndex < participants.length - 1
     return (
       <div className="App">
+          <h1 className="title center">{standup.name}</h1>
             <MainCarousel 
             slideIndex={currentIndex}
             window={window}
           >
               {
-                _.map(teams, (team) => (
+                _.map(participants, (team) => (
                   <TeamCover team={team} key={team.name} />
                 ))
               }
           </MainCarousel>
-        <div className="timer justify-center">
-            <h1>{fmtMSS(time)}</h1>
-        </div>
-        <div className="justify-center buttons">
-          <button className={`pause-btn ${paused ? "paused" : ""}`} onClick={this.handlePlayPauseClick} />
-        </div>
-        <button style={{position: 'absolute', top: '20%'}} onClick={this.next}>NEXT</button>
-        <button style={{position: 'absolute', top: '25%'}} onClick={this.back}>BACK</button>
-        <button style={{position: 'absolute', top: '30%'}} onClick={this.reset}>RESET</button>
+        <Timer time={time} />
+        <PlayPause paused={paused} onClick={this.handlePlayPauseClick} />
+        <button className="next-button" hidden={!isNext} onClick={this.next}>NEXT</button>
+        <button style={{position: 'absolute', top: '30%',  border: '1px solid black '}} onClick={this.reset}>RESET</button>
       </div>
     );
   }
@@ -78,4 +99,16 @@ class App extends Component {
 // TODO: Add svg circle timer
 // const PosedSvg = posed.svg({})
 
-export default App;
+const mapStateToProps = (state) => (
+    {
+      standup: state.standup
+    }
+)
+
+const mapDispatchToProps = dispatch => (
+  {
+    startStandup: () => dispatch({ type: INIT_STANDUP})
+  }
+)
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
