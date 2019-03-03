@@ -1,7 +1,7 @@
 {
   "main.css": "/countdown-fe/static/css/main.116c1f3a.chunk.css",
-  "main.js": "/countdown-fe/static/js/main.9db2034e.chunk.js",
-  "main.js.map": "/countdown-fe/static/js/main.9db2034e.chunk.js.map",
+  "main.js": "/countdown-fe/static/js/main.914af0e9.chunk.js",
+  "main.js.map": "/countdown-fe/static/js/main.914af0e9.chunk.js.map",
   "static/js/1.86294682.chunk.js": "/countdown-fe/static/js/1.86294682.chunk.js",
   "static/js/1.86294682.chunk.js.map": "/countdown-fe/static/js/1.86294682.chunk.js.map",
   "runtime~main.js": "/countdown-fe/static/js/runtime~main.9b02af0d.js",
@@ -9,6 +9,6 @@
   "static/media/badboii.png": "/countdown-fe/static/media/badboii.89e1ac52.png",
   "static/css/main.116c1f3a.chunk.css.map": "/countdown-fe/static/css/main.116c1f3a.chunk.css.map",
   "index.html": "/countdown-fe/index.html",
-  "precache-manifest.8570c8b651649a31f76cf3f62b0758af.js": "/countdown-fe/precache-manifest.8570c8b651649a31f76cf3f62b0758af.js",
+  "precache-manifest.ce5dc96b0c8a6c829155aa2ac5f07cad.js": "/countdown-fe/precache-manifest.ce5dc96b0c8a6c829155aa2ac5f07cad.js",
   "service-worker.js": "/countdown-fe/service-worker.js"
 }
