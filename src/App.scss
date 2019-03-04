@@ -1,16 +1,28 @@
-.standup-page {
-    display: grid;
-    grid-template-areas: 
-    "title"
-    "main"
-    "time"
-    "button"
-    ;
-    grid-template-rows: 10% 30% 15% 30%;
-    grid-row-gap: 5%;
-    height: 100vh;
-    background: #F2F2F5;
-    overflow: hidden;
+@import './variables';
+
+body {
+    font-family: $sans-serif;
+    font-weight: $normal;
+    color: $txt-primary;
+
+    .light {
+        font-weight: $light;
+    }
+
+    .bold {
+        font-weight: $bold;
+    }
+
+    .countdown-text {
+        display: block;
+        font-size: 1em;
+        line-height: 1.5em;
+        letter-spacing: 3px;
+    }
+
+    span.circle {
+        border-radius: 50%;
+    }
 }
 
 h1.title{

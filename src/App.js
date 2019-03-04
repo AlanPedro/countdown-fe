@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import './App.scss'
-import StandupPage from './pages/StandupView';
+import StandupPage from './pages/StandupPage/StandupPage';
 
 class App extends Component {
   render() {
