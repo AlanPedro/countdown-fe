@@ -1,4 +1,4 @@
-.App {
+.standup-page {
     display: grid;
     grid-template-areas: 
     "title"
@@ -87,10 +87,10 @@ h3 {
     text-align: center;
     overflow: hidden;
     background: transparent;
-}
 
-.circle img {
-    height: 80px
+    img {
+        height: 80px
+    }
 }
 
 .pause-btn {
@@ -105,15 +105,15 @@ h3 {
     border-style: solid;
     border-width: 37px 0 37px 60px;
     padding: 0;
-}
 
-.pause-btn.playing {
-border-style: double;
-border-width: 0px 0 0px 60px;
-}
-
-.pause-btn:hover {
-border-color: transparent transparent transparent #404040;
+    &.playing {
+        border-style: double;
+        border-width: 0px 0 0px 60px;
+    }
+    
+    &:hover {
+        border-color: transparent transparent transparent #404040;
+    }
 }
 
 .center {
@@ -121,7 +121,7 @@ border-color: transparent transparent transparent #404040;
 }
 
 @media(min-width: 850px) {
-    /* .App {
+    /* .standup-page {
         display: grid;
         grid-template-areas: 
         "main"
@@ -130,13 +130,13 @@ border-color: transparent transparent transparent #404040;
         ;
     } */
     
-    h1.title{
-        font-size: 3em;
-        margin-top: 2.5%;
-    }
-
     h1 {
         font-size: 2em;
+        
+        &.title {
+            font-size: 3em;
+            margin-top: 2.5%;
+        }
     }
     h2 {
         font-size: 1.6em;
@@ -153,10 +153,10 @@ border-color: transparent transparent transparent #404040;
         text-align: center;
         overflow: hidden;
         background: transparent;
-    }
-    
-    .circle img {
-        height: 165px
+
+        img {
+            height: 165px
+        }
     }
 
     .pause-btn {
