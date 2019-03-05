@@ -1,0 +1,12 @@
+@mixin borderGradient($start, $end) {
+    -webkit-border-image: 
+            -webkit-gradient(linear, 0 0, 0 100%, from($start), to($end)) 1 100%;
+        -webkit-border-image: 
+            -webkit-linear-gradient($start, $end) 1 100%;
+        -moz-border-image:
+            -moz-linear-gradient($start, $end) 1 100%;    
+        -o-border-image:
+            -o-linear-gradient($start, $end) 1 100%;
+        border-image:
+            linear-gradient(to bottom, $start, $end) 1 100%;
+}

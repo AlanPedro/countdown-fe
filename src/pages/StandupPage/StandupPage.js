@@ -1,12 +1,9 @@
 import React from 'react';
-import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import CText from '../../components/CText/CText';
-import Timer from '../../components/Timer/Timer';
-import PlayPause from '../../components/PlayPause/PlayPause';
-import TeamCover from '../../components/TeamCover/TeamCover';
-import MainCarousel from '../../components/MainCarousel/MainCarousel';
+import LoadingBar from '../../components/LoadingBar/LoadingBar';
+import PlayPauseButtons from '../../components/PlayPauseButtons/PlayPauseButtons';
 import { GET_STANDUP, START_TIMER, STOP_TIMER, RESET_STANDUP, GO_TO_INDEX } from '../../actions';
 import jez from '../../assets/badboii.png';
 import "./StandupPage.scss";
@@ -41,25 +38,19 @@ class StandupPage extends React.Component {
         this.setState({ window : { width: window.innerWidth, height: window.innerHeight }});
       }
     
-      handlePlayPauseClick = () => {
-        if (this.state.paused) {
-          this.props.startTimer()
-        } else {
-          this.props.stopTimer()
-        }
-        this.setState((state) => ({ paused: !state.paused}))
-      }
+      pressPause = () => {
+        this.setState(state => ({ paused: true }))
+        this.props.stopTimer()
+      };
+
+      pressPlay = () => {
+        this.setState(state => ({ paused: false }))
+        this.props.startTimer()
+      };
 
     render(){
         const { window, paused } = this.state;
         const { standup, time, currentIndex } = this.props;
-        // if (_.isEmpty(standup)) 
-        // return (
-            // <>
-            // <button style={{ border: "black solid 1px", fontSize: "100px", width: "50%" }} onClick={() => this.props.startStandup(0)}>Start BA standup</button>
-            // <button style={{ border: "black solid 1px", fontSize: "100px", width: "50%" }} onClick={() => this.props.startStandup(1)}>Start Main Standup</button>
-            // </>
-        // )
         const { participants } = standup
         const isNext = currentIndex < participants.length - 1;
         const arrays = [1,2,3,4,5];
@@ -77,39 +68,34 @@ class StandupPage extends React.Component {
                     <hr className="participants__hr" />
                     {
                         arrays.map(arr => (
-                          <>
-                            <div className="participant">
+                          <React.Fragment key={arr}>
+                            <div key={arr} className="participant">
                               <img src={jez} alt="jez" className="participant__img" />
                               <div className="participant__text">
                                 <CText weight="bold">EUA Team</CText>
                                 <CText>Sam Dempsey</CText>
                               </div>
                               <div className="participant__circles">
-                                  <span class="circle" />
-                                  <span class="circle" />
-                                  <span class="circle" />
+                                  <span className="circle" />
+                                  <span className="circle" />
+                                  <span className="circle" />
                               </div>
                             </div>
                             <hr className="participants__hr" />
-                          </>
+                          </React.Fragment>
                         ))
                     }
                 </div>
-                </div>
-                <div className="standup-page__main-view">
-                    
-
-                    {/* <MainCarousel 
-                    slideIndex={currentIndex}
-                    window={window}
-                >
-                    {
-                        _.map(participants, (team) => (
-                        <TeamCover team={team} key={team.name} />
-                        ))
-                    }
-                </MainCarousel> */}
-            </div>
+              </div>
+              <div className="standup-page__main-view">
+                  <LoadingBar percentage={time} />
+                  <PlayPauseButtons
+                     className="abs-br" 
+                     paused={paused}
+                     onPressPlay={this.pressPlay}
+                     onPressPause={this.pressPause}
+                     />
+              </div>
             </div>
         )
     }

@@ -1,4 +1,4 @@
-@import './variables';
+@import './styles/variables';
 
 body {
     font-family: $sans-serif;
@@ -20,7 +20,7 @@ body {
         letter-spacing: 3px;
     }
 
-    span.circle {
+    .circle {
         border-radius: 50%;
     }
 }
@@ -91,19 +91,19 @@ h3 {
     font-size: 0.6em;
 }
 
-.circle {
-    border-radius: 50%;
-    height: 70px;
-    width: 70px;
-    border: solid 8px white;
-    text-align: center;
-    overflow: hidden;
-    background: transparent;
+// .circle {
+//     border-radius: 50%;
+//     height: 70px;
+//     width: 70px;
+//     border: solid 8px white;
+//     text-align: center;
+//     overflow: hidden;
+//     background: transparent;
 
-    img {
-        height: 80px
-    }
-}
+//     img {
+//         height: 80px
+//     }
+// }
 
 .pause-btn {
     border: 0;
@@ -157,19 +157,19 @@ h3 {
         font-size: 1.2em;
     }
     
-    .circle {
-        border-radius: 50%;
-        height: 150px;
-        width: 150px;
-        border: solid 8px white;
-        text-align: center;
-        overflow: hidden;
-        background: transparent;
+    // .circle {
+    //     border-radius: 50%;
+    //     height: 150px;
+    //     width: 150px;
+    //     border: solid 8px white;
+    //     text-align: center;
+    //     overflow: hidden;
+    //     background: transparent;
 
-        img {
-            height: 165px
-        }
-    }
+    //     img {
+    //         height: 165px
+    //     }
+    // }
 
     .pause-btn {
         height: 150px;

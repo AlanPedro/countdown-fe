@@ -87,6 +87,12 @@
         grid-area: main;
         background-color: white;
         box-shadow: -1px 0px 10px 0.5px #aaaaaa;
+
+        .abs-br {
+            position: absolute;
+            bottom: 50px;
+            right: 70px;
+        }
     }
 
 }

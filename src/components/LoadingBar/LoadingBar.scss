@@ -1,0 +1,11 @@
+@import "../../styles/variables";
+
+.loading-bar {
+    height: 20px;
+    width: 100%;
+
+    .filler {
+        background-image: linear-gradient(to right, $linear-grad-start, $linear-grad-end);
+        height: 100%;
+    }    
+}
