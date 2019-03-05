@@ -49,10 +49,12 @@ class StandupPage extends React.Component {
       };
 
     render(){
-        const { window, paused } = this.state;
+        const { paused } = this.state;
         const { standup, time, currentIndex } = this.props;
         const { participants } = standup
         const isNext = currentIndex < participants.length - 1;
+        console.log(isNext)
+      
         const arrays = [1,2,3,4,5];
         return (
             <div className="standup-page">

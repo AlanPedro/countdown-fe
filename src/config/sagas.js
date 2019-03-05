@@ -2,7 +2,7 @@ import { takeEvery, takeLatest, call, put, take } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 
 import { INIT_STANDUP, GET_STANDUP, ERROR_INIT_STANDUP, START_TIMER, LIVE_UPDATE } from '../actions';
-import { dummyApi } from '../api/dummy';
+// import { dummyApi } from '../api/dummy';
 import Api from '../api/standup';
 
 /*
