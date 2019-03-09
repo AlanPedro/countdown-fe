@@ -5,6 +5,13 @@ body {
     font-weight: $normal;
     color: $txt-primary;
 
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    code {
+        font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+    }
+
     .light {
         font-weight: $light;
     }
@@ -23,6 +30,7 @@ body {
     .circle {
         border-radius: 50%;
     }
+
 }
 
 h1.title{

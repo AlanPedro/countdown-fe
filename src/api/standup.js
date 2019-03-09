@@ -1,13 +1,21 @@
 import axios from 'axios';
+import { SERVER_URL } from '../config/constants';
 
-const baseUrl = "http://localhost:8081";
+const baseUrl = SERVER_URL;
 
-const getStandup = (id) => (
-    axios.get(baseUrl + "/getStandup/" + id)
+const getStandupByName = (name) => (
+    axios.get(baseUrl + "/standups/" + name)
+    .then(res => res.data)
+    .catch(err => console.log(err))
+)
+
+const getAllStandups = () => (
+    axios.get(baseUrl + "/standups")
     .then(res => res.data)
     .catch(err => console.log(err))
 )
 
 export default {
-    getStandup
+    getStandupByName,
+    getAllStandups
 }

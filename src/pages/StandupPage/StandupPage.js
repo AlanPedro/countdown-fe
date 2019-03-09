@@ -1,12 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import CText from '../../components/CText/CText';
 import LoadingBar from '../../components/LoadingBar/LoadingBar';
 import PlayPauseButtons from '../../components/PlayPauseButtons/PlayPauseButtons';
-import { GET_STANDUP, START_TIMER, STOP_TIMER, RESET_STANDUP, GO_TO_INDEX } from '../../actions';
 import jez from '../../assets/badboii.png';
 import "./StandupPage.scss";
+import { actions } from "../../ducks/standup/standup";
 
 
 class StandupPage extends React.Component {
@@ -22,11 +23,9 @@ class StandupPage extends React.Component {
         }
       }
     
-      reset = () => this.props.resetStandup();
-      next = () => this.props.goTo(this.props.currentIndex);
-    
       componentDidMount = () => {
         this.updateWindowDimensions();
+        this.props.getStandup("auk");
         window.addEventListener('resize', this.updateWindowDimensions);
       }
     
@@ -50,12 +49,9 @@ class StandupPage extends React.Component {
 
     render(){
         const { paused } = this.state;
-        const { standup, time, currentIndex } = this.props;
-        const { participants } = standup
-        const isNext = currentIndex < participants.length - 1;
-        console.log(isNext)
-      
-        const arrays = [1,2,3,4,5];
+        const { standup } = this.props;
+        if (_.isEmpty(standup)) return <div> Hi </div>;
+        const { team } = standup
         return (
             <div className="standup-page">
                 <div className="standup-page__side-bar">
@@ -69,13 +65,13 @@ class StandupPage extends React.Component {
                   <div className="participants-wrapper">
                     <hr className="participants__hr" />
                     {
-                        arrays.map(arr => (
-                          <React.Fragment key={arr}>
-                            <div key={arr} className="participant">
+                        team.map(team => (
+                          <React.Fragment key={team.name}>
+                            <div className="participant">
                               <img src={jez} alt="jez" className="participant__img" />
                               <div className="participant__text">
-                                <CText weight="bold">EUA Team</CText>
-                                <CText>Sam Dempsey</CText>
+                                <CText weight="bold">{team.name}</CText>
+                                <CText>{team.speaker}</CText>
                               </div>
                               <div className="participant__circles">
                                   <span className="circle" />
@@ -90,7 +86,9 @@ class StandupPage extends React.Component {
                 </div>
               </div>
               <div className="standup-page__main-view">
-                  <LoadingBar percentage={time} />
+                  <LoadingBar percentage={standup.time} />
+                  <h1>{standup.name}</h1>
+                <button onClick={() => this.props.toNextSpeaker()}>NEXT</button>
                   <PlayPauseButtons
                      className="abs-br" 
                      paused={paused}
@@ -114,11 +112,10 @@ const mapStateToProps = (state) => (
 
 const mapDispatchToProps = dispatch => (
   {
-    startStandup: (id) => dispatch({ type: GET_STANDUP, payload: id}),
-    startTimer: () => dispatch({ type: START_TIMER }),
-    stopTimer: () => dispatch({ type: STOP_TIMER }),
-    resetStandup: () => dispatch({ type: RESET_STANDUP }),
-    goTo: () => dispatch({ type: GO_TO_INDEX })
+    getStandup: (id) => dispatch(actions.getStandup(id)),
+    startTimer: () => dispatch(actions.startStandup()),
+    stopTimer: () => dispatch(actions.pauseStandup()),
+    toNextSpeaker: () => dispatch(actions.toNextSpeaker())
   }
 )
 
