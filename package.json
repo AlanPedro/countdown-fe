@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://alanpedro.github.io/countdown-fe/",
   "dependencies": {
+    "@reach/router": "^1.2.1",
     "axios": "^0.18.0",
     "lodash": "^4.17.11",
     "node-sass": "^4.11.0",
