@@ -51,6 +51,15 @@
                 grid-column-gap: 10px;
                 cursor: grab;
 
+                &.active {
+                    background: lightblue;
+                    border: 10px yellow solid;
+                    margin: -10px;
+                    z-index: 100;
+                    position: relative;
+                    border-radius: 10px;
+                }
+
                 .participant__img {
                     grid-area: photo;
                     height: 65px;
@@ -72,8 +81,8 @@
                     justify-content: space-evenly;
 
                     span.circle {
-                        height: 1px;
-                        width: 1px;
+                        height: 6px;
+                        width: 6px;
                         background-color: #e0e0e0;
                         border-color: #e0e0e0;
                         border-width: 4px;
@@ -87,11 +96,35 @@
         grid-area: main;
         background-color: white;
         box-shadow: -1px 0px 10px 0.5px #aaaaaa;
+        display: grid;
+        grid-template-areas:
+            "loading"
+            "title"
+            "speaker"
+            "timer"
+            ;
+        grid-template-rows: 50px 150px 2fr 1fr;
+        grid-row-gap: 20px;
 
         .abs-br {
             position: absolute;
             bottom: 50px;
             right: 70px;
+        }
+
+        .title {
+            text-align: center;
+            grid-area: title;
+        }
+
+        .speaker {
+            grid-area: speaker;
+            background: white;
+            margin: 0 10vw;
+            border-radius: 20px;
+            box-shadow: -1px 0px 15px 5px #aaaaaa;
+            text-align: center;
+            padding: 15px;
         }
     }
 

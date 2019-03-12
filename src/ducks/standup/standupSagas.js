@@ -7,8 +7,8 @@ import { actions, types } from './standup';
 let ws;
 
 // Sagas
-const connect = () => {
-    const websocket = new WebSocket("ws://localhost:8080");
+const connect = name => {
+    const websocket = new WebSocket("ws://localhost:8080/standups/" + name);
     ws = websocket;
     return new Promise(resolve => {
         websocket.onopen = () => resolve(websocket)
@@ -21,16 +21,40 @@ const createWebSocketChannel = socket => eventChannel(emit => {
     return () => socket.close;
 })
 
-function* standupFlow() {
-    yield take(types.INITIALISE);
-    const socket = yield call(connect);
-    yield fork(standupRead, socket);
+// Joining a standup
+function* joinStandup() {
+    const action = yield take(types.JOIN);
+    const standup = yield call(getStandup, action.payload.name);
+    yield put(actions.initialiseStandup(standup))
+    
+    const socket = yield call(connect, action.payload.name);
+    const channel = yield call(createWebSocketChannel, socket);
+    yield fork(standupRead, channel);
 }
 
-function* standupRead(socket) {
+function* getStandup(name) {
+    try {
+        return yield call(Api.getStandupByName, name)
+    } catch (e) {
+        yield put(actions.errorInitialisingStandup(name, e.message))
+    }
+}
+
+// Admin page
+function* startStandup() {
+    const action = yield take(types.LOAD);
+    const standup = yield call(getStandup, action.payload.name);
+    yield put(actions.initialiseStandup(standup))
+    
+    const socket = yield call(connect, action.payload.name);
     const channel = yield call(createWebSocketChannel, socket);
+    
     yield take(types.START);
-    socket.send(JSON.stringify(actions.startStandup()))
+    socket.send(JSON.stringify(actions.startStandup()));
+    yield fork(standupRead, channel);
+}
+
+function* standupRead(channel) {
     while (true) {
         const payload = yield take(channel);
         yield put(actions.updateStandup(JSON.parse(payload.data)));
@@ -51,16 +75,6 @@ function* nextSpeaker() {
     }
 }
 
-function* getStandup() {
-    const action = yield take(types.GET_BY_NAME);
-    try {
-        const standup = yield call(Api.getStandupByName, action.payload.name)
-        yield put(actions.initialiseStandup(standup))
-    } catch (e) {
-         yield put(actions.errorInitialisingStandup(action.payload.id, e.message))
-    }
-}
-
 function* getAllStandups() {
     yield take(types.GET_ALL)
     try {
@@ -73,9 +87,9 @@ function* getAllStandups() {
 
 function* rootSaga() {
     yield all([
-        getStandup(),
         getAllStandups(),
-        standupFlow(),
+        startStandup(),
+        joinStandup(),
         pauseStandup(),
         nextSpeaker()
       ])

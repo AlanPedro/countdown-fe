@@ -2,9 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import CText from '../../components/CText/CText';
+import Sidebar from '../../components/Sidebar/Sidebar';
 import LoadingBar from '../../components/LoadingBar/LoadingBar';
-import jez from '../../assets/badboii.png';
 import "./StandupPage.scss";
 import { actions } from "../../ducks/standup/standup";
 
@@ -22,7 +21,7 @@ class StandupPage extends React.Component {
   
   componentDidMount = () => {
     this.updateWindowDimensions();
-    this.props.getStandup("auk");
+    this.props.joinStandup("auk");
     window.addEventListener('resize', this.updateWindowDimensions);
   }
 
@@ -35,46 +34,19 @@ class StandupPage extends React.Component {
     if (_.isEmpty(standup)) return <div> Hi </div>;
     return (
         <div className="standup-page">
-            <div className="standup-page__side-bar">
-              <h3 className="date">
-                TUESDAY
-                <br/>  
-                <span className="light">
-                  4TH OF FEBRUARY
-                </span>
-              </h3>
-              <div className="participants-wrapper">
-                <hr className="participants__hr" />
-                {
-                  standup.team.map(team => (
-                    <React.Fragment key={team.name}>
-                      <div className="participant">
-                        <img src={jez} alt="jez" className="participant__img" />
-                        <div className="participant__text">
-                          <CText weight="bold">{team.name}</CText>
-                          <CText>{team.speaker}</CText>
-                        </div>
-                        <div className="participant__circles">
-                            <span className="circle" />
-                            <span className="circle" />
-                            <span className="circle" />
-                        </div>
-                      </div>
-                      <hr className="participants__hr" />
-                    </React.Fragment>
-                  ))
-                }
-            </div>
-          </div>
+          <Sidebar teams={standup.teams} current={{team: standup.currentTeam, speaker: standup.currentSpeaker}} />
           <div className="standup-page__main-view">
               <LoadingBar percentage={standup.time} />
-              <h1>{standup.name}</h1>
+              <h1 className="title">{standup.name}</h1>
+              <div className="speaker">
+                <h1>{standup.currentTeam}</h1>
+                <h2>{standup.currentSpeaker}</h2>
+              </div>
           </div>
         </div>
     )
   }
 }
-
 
 const mapStateToProps = (state) => (
     {
@@ -84,7 +56,7 @@ const mapStateToProps = (state) => (
 
 const mapDispatchToProps = dispatch => (
   {
-    getStandup: (id) => dispatch(actions.getStandup(id))
+    joinStandup: (name) => dispatch(actions.joinStandup(name))
   }
 )
 

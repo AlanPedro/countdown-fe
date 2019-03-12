@@ -1,0 +1,51 @@
+.admin-page {
+    text-align: center;
+    display: grid;
+    grid-template-areas: 
+        "name"
+        "timer"
+        "current"
+        "next"
+        "buttons"
+    ;
+    grid-template-rows: 70px 80px 80px 300px 1fr;
+
+    .admin-page__name {
+        grid-area: name;
+    }
+    .admin-page__timer {
+        grid-area: timer;
+    }
+    .admin-page__current {
+        grid-area: current;
+    }
+    
+    .admin-page__next-teams {
+        grid-area: next;
+        margin: 0 60px;
+        
+        .next-teams__team {
+            &:first-of-type {
+                border-top-width: 1px;
+                border-top-right-radius: 10px;
+                border-top-left-radius: 10px;
+            }
+            &:last-of-type {
+                border-bottom-width: 1px;
+                border-bottom-right-radius: 10px;
+                border-bottom-left-radius: 10px;
+            }
+            border-width: 0.5px 1px;
+            border-style: solid;
+            h3 {
+                margin: 0;
+                padding: 10px;
+            }
+        }
+    }
+    .admin-page__buttons {
+        grid-area: buttons;
+        display: flex;
+        justify-content: space-evenly;
+    }
+}
