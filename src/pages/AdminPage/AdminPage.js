@@ -17,7 +17,7 @@ class AdminPage extends Component {
         }
     }
 
-    componentDidMount = () => this.props.initialiseStandup("auk");
+    componentDidMount = () => this.props.initialiseStandup(this.props.name);
 
     renderButtons = () => {
         const button = !this.state.started 
@@ -55,7 +55,7 @@ class AdminPage extends Component {
         return (
             <div className="admin-page">
                 <h1 className="admin-page__name">{standup.name}</h1>
-                <h2 className="admin-page__timer">{60 - standup.time || 60}</h2>
+                <h2 className="admin-page__timer">{standup.time}</h2>
                 <h2 className="admin-page__current">{currentTeam} - {currentSpeaker}</h2>
 
                 <div className="admin-page__next-teams">

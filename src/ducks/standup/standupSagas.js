@@ -4,11 +4,15 @@ import { eventChannel } from 'redux-saga';
 import Api from '../../api/standup';
 import { actions, types } from './standup';
 
+const url = `172.22.121.28:9000`;
+const wsAdminUrl = (name) => `${url}/admin/standups/${name}/start`;
+const wsClientUrl = (name) => `${url}/client/standups/${name}/status`;
+
 let ws;
 
 // Sagas
-const connect = name => {
-    const websocket = new WebSocket("ws://localhost:8080/standups/" + name);
+const connect = wsUrl => {
+    const websocket = new WebSocket("ws://" + wsUrl);
     ws = websocket;
     return new Promise(resolve => {
         websocket.onopen = () => resolve(websocket)
@@ -25,16 +29,19 @@ const createWebSocketChannel = socket => eventChannel(emit => {
 function* joinStandup() {
     const action = yield take(types.JOIN);
     const standup = yield call(getStandup, action.payload.name);
-    yield put(actions.initialiseStandup(standup))
-    
-    const socket = yield call(connect, action.payload.name);
-    const channel = yield call(createWebSocketChannel, socket);
-    yield fork(standupRead, channel);
+    if (standup) {
+        yield put(actions.initialiseStandup(standup))
+        
+        const socket = yield call(connect, wsClientUrl(action.payload.name));
+        const channel = yield call(createWebSocketChannel, socket);
+        yield fork(standupRead, channel);
+    }
 }
 
 function* getStandup(name) {
     try {
-        return yield call(Api.getStandupByName, name)
+        const result = yield call(Api.getStandupByName, name)
+        return result;
     } catch (e) {
         yield put(actions.errorInitialisingStandup(name, e.message))
     }
@@ -44,34 +51,39 @@ function* getStandup(name) {
 function* startStandup() {
     const action = yield take(types.LOAD);
     const standup = yield call(getStandup, action.payload.name);
-    yield put(actions.initialiseStandup(standup))
-    
-    const socket = yield call(connect, action.payload.name);
-    const channel = yield call(createWebSocketChannel, socket);
-    
-    yield take(types.START);
-    socket.send(JSON.stringify(actions.startStandup()));
-    yield fork(standupRead, channel);
+
+    if (standup) {
+        yield put(actions.initialiseStandup(standup))
+        const socket = yield call(connect, wsAdminUrl(action.payload.name));
+        const channel = yield call(createWebSocketChannel, socket);
+        
+        yield take(types.START);
+        socket.send("start");
+        yield fork(standupRead, channel);
+    }
 }
 
 function* standupRead(channel) {
     while (true) {
         const payload = yield take(channel);
-        yield put(actions.updateStandup(JSON.parse(payload.data)));
+        const data = JSON.parse(payload.data);
+        if (!data.message) {
+            yield put(actions.updateStandup(data));
+        }
     }
 }
 
 function* pauseStandup() {
     while (true) {
         yield take(types.PAUSE);
-        ws.send(JSON.stringify(actions.pauseStandup()));
+        ws.send("pause");
     }
 }
     
 function* nextSpeaker() {
     while (true) {
         yield take(types.NEXT_SPEAKER);
-        ws.send(JSON.stringify(actions.toNextSpeaker()));
+        ws.send("next");
     }
 }
 

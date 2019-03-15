@@ -17,19 +17,27 @@ const RESET = "duck/standup/RESET";
 export default function reducer(state = {}, action) {
     switch(action.type) {
         case INITIALISE:
+            const { standup } = action.payload;
+            const first = standup.teams.find(_ => true);
             return {
-                teams: action.payload.standup.team,
-                name: action.payload.standup.name
+                teams: standup.teams,
+                name: standup.name,
+                currentTeam: first.name,
+                currentSpeaker: first.speaker,
+                time: first.allocationInSeconds
             }
         case UPDATE:
-            const { name, speaker, remaining, status } = action.payload.standup;
+            const { name, speaker, remainingSeconds, status } = action.payload.standup;
             return {
                 teams: state.teams,
                 currentTeam: name,
                 currentSpeaker: speaker,
-                time: status === "paused" ? state.time : remaining,
+                time: status === "paused" ? state.time : remainingSeconds,
                 name: state.name
             }; 
+        case ERROR_INITIALISING:
+            console.log("Error getting standup");
+            return state;
         default:
             return state;
     }

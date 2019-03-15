@@ -5,6 +5,7 @@ body {
     font-weight: $normal;
     color: $txt-primary;
     margin: 0;
+    overflow: hidden;
 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -30,6 +31,10 @@ body {
 
     .circle {
         border-radius: 50%;
+    }
+
+    .abs {
+        position: absolute;
     }
 
 }

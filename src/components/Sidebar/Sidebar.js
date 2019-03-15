@@ -3,6 +3,15 @@ import React from 'react';
 import CText from '../CText/CText';
 import { getDayAsString, getPrettyDate } from '../../utils';
 import jez from '../../assets/badboii.png';
+import posed from 'react-pose';
+// import posed, { PoseGroup } from 'react-pose';
+
+const PosedParticipantsWrapper = posed.div({
+  rest: {
+    y: ({ offset }) => -offset,
+    transition: { duration: 1000}
+  }
+})
 
 const Sidebar = (props) => {
     const { teams, current } = props;
@@ -29,7 +38,7 @@ const Sidebar = (props) => {
             </React.Fragment>
         )
     }
-
+    const currentTeamIndex = teams.findIndex(t => t.name === current.team);
     return (
         <div className="standup-page__side-bar">
         <h3 className="date">
@@ -39,12 +48,21 @@ const Sidebar = (props) => {
             {getPrettyDate(today)}
           </span>
         </h3>
-        <div className="participants-wrapper">
-          <hr className="participants__hr" />
-          {
-            teams.map(renderTeam)
-          }
-      </div>
+        <div className="participants-wrapper-wrapper">
+          <div className="participants-wrapper">
+            <hr className="participants__hr" />
+            <div className="participant abs active highlighter" />
+            <PosedParticipantsWrapper
+              pose="rest"
+              offset={currentTeamIndex * 73}
+              poseKey={currentTeamIndex} 
+            >
+              {
+                teams.map(renderTeam)
+              }
+            </PosedParticipantsWrapper>
+          </div>
+        </div>
     </div>
     )
 }
