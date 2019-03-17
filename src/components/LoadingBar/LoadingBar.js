@@ -11,13 +11,13 @@ const PosedLoadingBar = posed.div({
       }
 })
 
-const LoadingBar = ({percentage}) => (
+const LoadingBar = ({allocation, timeLeft}) => (
     <div className="loading-bar">
         <PosedLoadingBar 
             className="filler" 
-            timePassed={100 - percentage}
+            timePassed={timeLeft / allocation * 100}
             pose={"passTime"}
-            poseKey={percentage}
+            poseKey={timeLeft}
             />
     </div>
 );

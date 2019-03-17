@@ -6,7 +6,7 @@ import "./RoundButton.scss";
 const RoundButton = (props) => {
     const classes = `circle large-btn ${props.className}`;
     return (
-        <button onClick={props.onClick} className={classes}>
+        <button onClick={props.onClick} disabled={props.disabled} className={classes}>
             {props.children}
         </button>
     )
@@ -19,12 +19,14 @@ RoundButton.propTypes = {
         PropTypes.node,
         PropTypes.string
     ]),
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
+    disabled: PropTypes.bool
 }
 
 RoundButton.defaultProps = {
     className: " ",
-    children: "Click me!"
+    children: "Click me!",
+    disabled: false
 }
 
 export default RoundButton;
