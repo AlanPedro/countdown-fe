@@ -1,0 +1,16 @@
+version: '3.5'
+
+services:
+
+  frontend:
+    container_name: countdown-fe
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ".:/usr/app"
+      - "/usr/app/node_modules"
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
