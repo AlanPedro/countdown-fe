@@ -6,6 +6,7 @@ import posed, { PoseGroup } from 'react-pose';
 import './AdminPage.scss';
 import { actions } from '../../ducks/standup/standup';
 import RoundButton from '../../components/RoundButton/RoundButton';
+import BackButton from '../../components/BackButton/BackButton';
 
 class AdminPage extends Component {
 
@@ -17,7 +18,7 @@ class AdminPage extends Component {
         }
     }
 
-    componentDidMount = () => this.props.initialiseStandup(this.props.name);
+    componentDidMount = () => this.props.initialiseStandup(this.props.match.params.name);
 
     renderButtons = () => {
         const button = !this.state.started 
@@ -49,11 +50,13 @@ class AdminPage extends Component {
 
     render() {
         const { standup } = this.props;
+        console.log(this.props);
         if (_.isEmpty(standup)) return <div>Hi</div>;
         const { teams, currentTeam, currentSpeaker } = standup;
         const teamsToCome = teams.slice(teams.findIndex(team => currentTeam === team.name) + 1);
         return (
             <div className="admin-page">
+                <BackButton className="abs back-btn" to="/" />
                 <h1 className="admin-page__name">{standup.name}</h1>
                 <h2 className="admin-page__timer">{standup.time}</h2>
                 <h2 className="admin-page__current">{currentTeam} - {currentSpeaker}</h2>
