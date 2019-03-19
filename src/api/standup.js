@@ -1,8 +1,7 @@
 import axios from 'axios';
-// import { SERVER_URL } from '../config/constants';
+import { API_SERVER_URL } from '../config/constants';
 
-// const baseUrl = SERVER_URL;
-const baseUrl = "http://172.22.121.28:9000";
+const baseUrl = API_SERVER_URL;
 
 const getStandupByName = (name) => (
     axios.get(baseUrl + "/standups/" + name)

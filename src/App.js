@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
-import { Router } from "@reach/router"
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import './App.scss'
 import StandupPage from './pages/StandupPage/StandupPage';
 import AdminPage from './pages/AdminPage/AdminPage';
+import HomePage from './pages/HomePage/HomePage';
 
 class App extends Component {
   render() {
     return (
       <Router>
-        <AdminPage path="standups/:name/admin" />
-        <StandupPage path="standups/:name" />
+        <Switch>
+          <Route path="/standups/:name/admin" component={AdminPage} />
+          <Route path="/standups/:name" component={StandupPage} />
+          <Route path="/" exact component={HomePage} />
+        </Switch>
       </Router>
     )
   }

@@ -1,10 +1,12 @@
-import { all, call, fork, put, take } from 'redux-saga/effects';
+import { call, fork, put, take, cancel, cancelled } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 
 import Api from '../../api/standup';
+import { WS_SERVER_URL } from '../../config/constants';
 import { actions, types } from './standup';
 
-const url = `172.22.121.28:9000`;
+const url = WS_SERVER_URL;
+
 const wsAdminUrl = (name) => `${url}/admin/standups/${name}/start`;
 const wsClientUrl = (name) => `${url}/client/standups/${name}/status`;
 
@@ -12,7 +14,7 @@ let ws;
 
 // Sagas
 const connect = wsUrl => {
-    const websocket = new WebSocket("ws://" + wsUrl);
+    const websocket = new WebSocket(wsUrl);
     ws = websocket;
     return new Promise(resolve => {
         websocket.onopen = () => resolve(websocket)
@@ -25,16 +27,31 @@ const createWebSocketChannel = socket => eventChannel(emit => {
     return () => socket.close;
 })
 
+function* joinStandupWrapper() {
+    while (true) {
+        const action = yield take(types.JOIN);
+        const runningStandup = yield fork(joinStandup, action.payload.name);
+
+        yield take("LEAVE_STANDUP");
+        yield cancel(runningStandup);
+    }
+}
+
 // Joining a standup
-function* joinStandup() {
-    const action = yield take(types.JOIN);
-    const standup = yield call(getStandup, action.payload.name);
-    if (standup) {
-        yield put(actions.initialiseStandup(standup))
-        
-        const socket = yield call(connect, wsClientUrl(action.payload.name));
-        const channel = yield call(createWebSocketChannel, socket);
-        yield fork(standupRead, channel);
+function* joinStandup(name) {
+    try {
+        const standup = yield call(getStandup, name);
+        if (standup) {
+            yield put(actions.initialiseStandup(standup))
+            
+            const socket = yield call(connect, wsClientUrl(name));
+            const channel = yield call(createWebSocketChannel, socket);
+            yield fork(standupRead, channel);
+        }
+    } finally {
+        if (yield cancelled()) {
+            console.log("LEFT STANDUP")
+        }
     }
 }
 
@@ -69,6 +86,8 @@ function* standupRead(channel) {
         const data = JSON.parse(payload.data);
         if (!data.message) {
             yield put(actions.updateStandup(data));
+        } else {
+            yield put({type: "LEAVE_STANDUP"});
         }
     }
 }
@@ -87,24 +106,11 @@ function* nextSpeaker() {
     }
 }
 
-function* getAllStandups() {
-    yield take(types.GET_ALL)
-    try {
-        const allStandups = yield call(Api.getAllStandups)
-        yield put(actions.getAllStandupsSuccess(allStandups))
-    } catch (e) {
-        yield put(actions.getAllStandupsFailure(e.message))
-    }
-}
+const combinedSagas = [
+    startStandup(),
+    joinStandupWrapper(),
+    pauseStandup(),
+    nextSpeaker()
+]
 
-function* rootSaga() {
-    yield all([
-        getAllStandups(),
-        startStandup(),
-        joinStandup(),
-        pauseStandup(),
-        nextSpeaker()
-      ])
-}
-
-export default rootSaga;
+export default combinedSagas;

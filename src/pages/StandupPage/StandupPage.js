@@ -7,6 +7,7 @@ import LoadingBar from '../../components/LoadingBar/LoadingBar';
 import Timer from '../../components/Timer/Timer';
 import "./StandupPage.scss";
 import { actions } from "../../ducks/standup/standup";
+import BackButton from '../../components/BackButton/BackButton';
 
 class StandupPage extends React.Component {
 
@@ -19,14 +20,19 @@ class StandupPage extends React.Component {
       }
     }
   }
-  
+
   componentDidMount = () => {
     this.updateWindowDimensions();
-    this.props.joinStandup(this.props.name);
+    this.props.joinStandup(this.props.match.params.name);
     window.addEventListener('resize', this.updateWindowDimensions);
+    window.onpopstate = e => this.componentWillUnmount;
   }
 
-  componentWillUnmount = () =>  window.removeEventListener('resize', this.updateWindowDimensions);
+  componentWillUnmount = () => {
+    this.props.leaveStandup(this.props.match.params.name)
+    window.removeEventListener('resize', this.updateWindowDimensions);
+  }
+
   
   updateWindowDimensions = () => this.setState({ window : { width: window.innerWidth, height: window.innerHeight }});
   
@@ -37,6 +43,7 @@ class StandupPage extends React.Component {
     if (_.isEmpty(standup.teams)) return <div> Hi </div>;
     return (
         <div className="standup-page">
+          <BackButton className="abs back-btn" to="/" />
           <Sidebar teams={standup.teams} current={{team: standup.currentTeam, speaker: standup.currentSpeaker}} />
           <div className="standup-page__main-view">
               <LoadingBar allocation={standup.teams.find(team => team.name === standup.currentTeam).allocationInSeconds} timeLeft={standup.time} />
@@ -47,6 +54,14 @@ class StandupPage extends React.Component {
                 {this.renderTimer(standup.time)}
               </div>
           </div>
+          { !standup.live &&
+            <div className="standup-off-fg">
+              <div className="refresh-container">
+                  <h1>Standup is not live!</h1>
+                  <button value="Refresh Page" onClick={() => window.location.reload() }>Refresh page</button>
+              </div>
+            </div>
+          }
         </div>
     )
   }
@@ -60,7 +75,8 @@ const mapStateToProps = (state) => (
 
 const mapDispatchToProps = dispatch => (
   {
-    joinStandup: (name) => dispatch(actions.joinStandup(name))
+    joinStandup: (name) => dispatch(actions.joinStandup(name)),
+    leaveStandup: (name) => dispatch({type: "LEAVE_STANDUP"})
   }
 )
 

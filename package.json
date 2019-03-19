@@ -4,7 +4,6 @@
   "private": true,
   "homepage": "https://alanpedro.github.io/countdown-fe/",
   "dependencies": {
-    "@reach/router": "^1.2.1",
     "axios": "^0.18.0",
     "lodash": "^4.17.11",
     "node-sass": "^4.11.0",
@@ -13,6 +12,7 @@
     "react-dom": "^16.7.0",
     "react-pose": "^4.0.6",
     "react-redux": "^6.0.0",
+    "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.3",
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",

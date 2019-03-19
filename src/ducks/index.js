@@ -1,16 +1,18 @@
 import { combineReducers } from 'redux';
 
 import standup from './standup/standup';
+import availableStandups from './availableStandups/availableStandups.js';
 
 const rootReducer = combineReducers({
-    standup
+    standup,
+    availableStandups
 })
 
 export default rootReducer;
 
 /*
 
-streams: string[],
+availableStandups: string[],
 standup: {
     name: string,
     time: number,

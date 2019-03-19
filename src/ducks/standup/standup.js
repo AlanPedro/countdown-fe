@@ -1,4 +1,5 @@
 // standup.js
+import _ from 'lodash';
 
 // Types
 const GET_ALL = "duck/standup/GET_ALL";
@@ -24,7 +25,8 @@ export default function reducer(state = {}, action) {
                 name: standup.name,
                 currentTeam: first.name,
                 currentSpeaker: first.speaker,
-                time: first.allocationInSeconds
+                time: first.allocationInSeconds,
+                live: false
             }
         case UPDATE:
             const { name, speaker, remainingSeconds, status } = action.payload.standup;
@@ -33,11 +35,14 @@ export default function reducer(state = {}, action) {
                 currentTeam: name,
                 currentSpeaker: speaker,
                 time: status === "paused" ? state.time : remainingSeconds,
-                name: state.name
+                name: state.name,
+                live: true
             }; 
         case ERROR_INITIALISING:
             console.log("Error getting standup");
             return state;
+        case "LEAVE_STANDUP":
+            return _.merge(state, { live: false })
         default:
             return state;
     }

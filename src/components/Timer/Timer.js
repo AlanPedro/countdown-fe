@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Timer = ({time}) => (
-    <div className="timer justify-center">
+    <div className="timer">
         <h1>{time}</h1>
     </div>
 )
