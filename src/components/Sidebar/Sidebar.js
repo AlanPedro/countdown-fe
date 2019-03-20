@@ -2,7 +2,7 @@ import React from 'react';
 
 import CText from '../CText/CText';
 import { getDayAsString, getPrettyDate } from '../../utils';
-import jez from '../../assets/badboii.png';
+import placeholder from '../../assets/placeholder.png';
 import posed from 'react-pose';
 // import posed, { PoseGroup } from 'react-pose';
 
@@ -23,7 +23,7 @@ const Sidebar = (props) => {
         return (
             <React.Fragment key={team.name}>
                 <div className={classes}>
-                  <img src={jez} alt="jez" className="participant__img" />
+                  <img src={placeholder} alt="placeholder" className="participant__img" />
                   <div className="participant__text">
                     <CText weight="bold">{team.name}</CText>
                     <CText>{team.speaker}</CText>
