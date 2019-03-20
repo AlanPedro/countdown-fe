@@ -19,13 +19,13 @@ class HomePage extends Component {
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
                 {
                     standups.map(standup => (
-                        <div>
-                            <Link key={standup} to={`/standups/${standup}`}>
+                        <div key={standup}>
+                            <Link to={`/standups/${standup}`}>
                                 <RoundButton>
                                     { standup }
                                 </RoundButton>
                             </Link>
-                            <Link key={`${standup}.admin`} to={`/standups/${standup}/admin`}>
+                            <Link to={`/standups/${standup}/admin`}>
                                 <RoundButton>
                                     { standup } admin page
                                 </RoundButton>
