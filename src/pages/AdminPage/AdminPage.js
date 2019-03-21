@@ -14,7 +14,8 @@ class AdminPage extends Component {
         super(props);
         this.state = {
             paused: true,
-            started: false
+            started: false,
+            password: ""
         }
     }
 
@@ -34,8 +35,10 @@ class AdminPage extends Component {
     }
 
     start = () => {
-        this.setState({ paused: false, started: true })
-        this.props.startStandup();
+        if (this.state.password === "iamadmin") {
+            this.setState({ paused: false, started: true })
+            this.props.startStandup();
+        }
     }
     
     pause = () => {
@@ -46,6 +49,11 @@ class AdminPage extends Component {
     next = () => {
         this.setState({ paused: false })
         this.props.nextSpeaker();
+    }
+
+    onInputChange = (e) => {
+        console.log(e);
+        this.setState({ password: e.target.value})
     }
 
     render() {
@@ -71,6 +79,9 @@ class AdminPage extends Component {
                             ))
                         }
                     </PoseGroup>
+                    <hr />
+                    <h3>Enter password to start</h3>
+                    <input type="text" onChange={this.onInputChange} value={this.state.password} />
                 </div>
                 <div className="admin-page__buttons">
                     {this.renderButtons()}

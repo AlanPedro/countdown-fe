@@ -1,4 +1,4 @@
-import { call, fork, put, take, cancel, cancelled } from 'redux-saga/effects';
+import { call, fork, put, take, cancel, cancelled, takeLatest } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 
 import Api from '../../api/standup';
@@ -27,14 +27,11 @@ const createWebSocketChannel = socket => eventChannel(emit => {
     return () => socket.close;
 })
 
-function* joinStandupWrapper() {
-    while (true) {
-        const action = yield take(types.JOIN);
-        const runningStandup = yield fork(joinStandup, action.payload.name);
+function* joinStandupWrapper(action) {
+    const runningStandup = yield fork(joinStandup, action.payload.name);
 
-        yield take("LEAVE_STANDUP");
-        yield cancel(runningStandup);
-    }
+    yield take("LEAVE_STANDUP");
+    yield cancel(runningStandup);
 }
 
 // Joining a standup
@@ -65,16 +62,16 @@ function* getStandup(name) {
 }
 
 // Admin page
-function* startStandup() {
-    const action = yield take(types.LOAD);
+function* startStandup(action) {
     const standup = yield call(getStandup, action.payload.name);
 
     if (standup) {
         yield put(actions.initialiseStandup(standup))
+
+        yield take(types.START)
         const socket = yield call(connect, wsAdminUrl(action.payload.name));
         const channel = yield call(createWebSocketChannel, socket);
         
-        yield take(types.START);
         socket.send("start");
         yield fork(standupRead, channel);
     }
@@ -106,9 +103,17 @@ function* nextSpeaker() {
     }
 }
 
+function* joinStandupListener() {
+    yield takeLatest(types.JOIN, joinStandupWrapper);
+}
+
+function* startStandupListener() {
+    yield takeLatest(types.LOAD, startStandup);
+}
+
 const combinedSagas = [
-    startStandup(),
-    joinStandupWrapper(),
+    startStandupListener(),
+    joinStandupListener(),
     pauseStandup(),
     nextSpeaker()
 ]

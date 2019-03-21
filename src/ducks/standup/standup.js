@@ -23,6 +23,7 @@ export default function reducer(state = {}, action) {
             return {
                 teams: standup.teams,
                 name: standup.name,
+                displayName: standup.displayName,
                 currentTeam: first.name,
                 currentSpeaker: first.speaker,
                 time: first.allocationInSeconds,

@@ -16,18 +16,18 @@ class HomePage extends Component {
         const { standups } = this.props;
         if (_.isEmpty(standups)) return <div>hiads</div>;
         return (
-            <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-evenly', height: '100vh', alignItems: 'center' }}>
                 {
                     standups.map(standup => (
-                        <div key={standup}>
-                            <Link to={`/standups/${standup}`}>
+                        <div key={standup.name}>
+                            <Link to={`/standups/${standup.name}`}>
                                 <RoundButton>
-                                    { standup }
+                                    { standup.displayName }
                                 </RoundButton>
                             </Link>
-                            <Link to={`/standups/${standup}/admin`}>
+                            <Link to={`/standups/${standup.name}/admin`}>
                                 <RoundButton>
-                                    { standup } admin page
+                                    { standup.displayName } admin page
                                 </RoundButton>
                             </Link>
                         </div>
