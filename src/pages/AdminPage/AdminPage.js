@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import _ from 'lodash';
 import posed, { PoseGroup } from 'react-pose';
 
 import './AdminPage.scss';
 import { actions } from '../../ducks/standup/standup';
 import RoundButton from '../../components/RoundButton/RoundButton';
 import BackButton from '../../components/BackButton/BackButton';
+import Popup from '../../components/Popup/Popup';
+import CTextInput from '../../components/CTextInput/CTextInput';
 
 class AdminPage extends Component {
 
@@ -15,7 +16,7 @@ class AdminPage extends Component {
         this.state = {
             paused: true,
             started: false,
-            password: ""
+            isAuthenticated: false
         }
     }
 
@@ -35,10 +36,8 @@ class AdminPage extends Component {
     }
 
     start = () => {
-        if (this.state.password === "iamadmin") {
-            this.setState({ paused: false, started: true })
-            this.props.startStandup();
-        }
+        this.setState({ paused: false, started: true })
+        this.props.startStandup();
     }
     
     pause = () => {
@@ -51,15 +50,19 @@ class AdminPage extends Component {
         this.props.nextSpeaker();
     }
 
-    onInputChange = (e) => {
-        console.log(e);
-        this.setState({ password: e.target.value})
-    }
-
     render() {
         const { standup } = this.props;
         console.log(this.props);
-        if (_.isEmpty(standup)) return <div>Hi</div>;
+        if (!this.state.isAuthenticated) 
+            return (
+                <Popup>
+                    <h1>
+                        You need to sign in to access the admin panel
+                    </h1>
+                    <CTextInput onChange={this.onInputChange} value={this.state.password} />
+                    <button onClick={this.signIn}>Sign In</button>
+                </Popup>
+            );
         const { teams, currentTeam, currentSpeaker } = standup;
         const teamsToCome = teams.slice(teams.findIndex(team => currentTeam === team.name) + 1);
         return (

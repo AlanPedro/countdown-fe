@@ -22,11 +22,16 @@ body {
         font-weight: $bold;
     }
 
-    .countdown-text {
-        display: block;
-        font-size: 1em;
+    h1 {
+        font-size: 1.2em;
         line-height: 1.5em;
-        letter-spacing: 3px;
+        letter-spacing: 2px;
+    }
+    h2 {
+        font-size: 0.8em;
+    }
+    h3 {
+        font-size: 0.6em;
     }
 
     .circle {
@@ -43,171 +48,37 @@ body {
         z-index: 100000;
     }
 
-}
-
-h1.title{
-    grid-area: title;
-    font-size: 1.7em;
-    margin-top: 1%;
-}
-
-.main-display-wrapper {
-    box-sizing: content-box;
-    position: relative;
-    height: 100%;
-    width: inherit;
- }
-
- .main-display {
-    display: flex;
-    height: 100%;
-    flex-wrap: nowrap;
-    position: absolute;
-    width: 100vw;
-    left: 42vw;
- }
-
- .next-button {
-    font-size: 2em;
-    margin: 0;
-    border: 1px solid #202020;
-    padding: 5px 15px;
-    border-radius: 5px;
-    background: lightgreen;
-    position: absolute;
-    right: 15%;
-    bottom: 13%;
-    border: 1px solid black;
- }
-
- .timer {
-     align-self: center;
- }
-
- .timer h1 {
-     font-size: 2em;
-     margin: 0;
-     border: 1px solid #202020;
-     padding: 5px 15px;
-     border-radius: 5px;
- }
-
- .buttons {
-    display: flex;
-    flex-direction: column;
- }
-
-.justify-center {
-    justify-self: center;
-}
-
-h1 {
-    font-size: 1em;
-}
-h2 {
-    font-size: 0.8em;
-}
-h3 {
-    font-size: 0.6em;
-}
-
-// .circle {
-//     border-radius: 50%;
-//     height: 70px;
-//     width: 70px;
-//     border: solid 8px white;
-//     text-align: center;
-//     overflow: hidden;
-//     background: transparent;
-
-//     img {
-//         height: 80px
-//     }
-// }
-
-.pause-btn {
-    border: 0;
-    background: transparent;
-    box-sizing: border-box;
-    width: 0;
-    height: 74px;
-    border-color: transparent transparent transparent #202020;
-    transition: 100ms all ease;
-    cursor: pointer;
-    border-style: solid;
-    border-width: 37px 0 37px 60px;
-    padding: 0;
-
-    &.playing {
-        border-style: double;
-        border-width: 0px 0 0px 60px;
+    .justify-center {
+        justify-self: center;
     }
-    
-    &:hover {
-        border-color: transparent transparent transparent #404040;
-    }
+
+
 }
 
-.center {
-    text-align: center;
+@media(min-width: 500px) {
+    body {
+        h1 {
+            font-size: 1.5em;
+        }
+
+    }
 }
 
 @media(min-width: 850px) {
-    /* .standup-page {
-        display: grid;
-        grid-template-areas: 
-        "main"
-        "timer"
-        "button"
-        ;
-    } */
-    
-    h1 {
-        font-size: 2em;
-        
-        &.title {
-            font-size: 3em;
-            margin-top: 2.5%;
+    body {
+        h1 {
+            font-size: 2em;
+            
+            &.title {
+                font-size: 3em;
+                margin-top: 2.5%;
+            }
+        }
+        h2 {
+            font-size: 1.6em;
+        }
+        h3 {
+            font-size: 1.2em;
         }
     }
-    h2 {
-        font-size: 1.6em;
-    }
-    h3 {
-        font-size: 1.2em;
-    }
-    
-    // .circle {
-    //     border-radius: 50%;
-    //     height: 150px;
-    //     width: 150px;
-    //     border: solid 8px white;
-    //     text-align: center;
-    //     overflow: hidden;
-    //     background: transparent;
-
-    //     img {
-    //         height: 165px
-    //     }
-    // }
-
-    .pause-btn {
-        height: 150px;
-        border-width: 75px 0 75px 125px;
-    }
-    .pause-btn.playing {
-        border-width: 0px 0 0px 100px;
-    }
-
-    .timer h1 {
-        font-size: 4em;
-        padding: 10px 25px;
-    }
-
-    .next-button {
-        font-size: 4em;
-        padding: 10px 25px;
-        right: 15%;
-        bottom: 15%;
-     }
 }

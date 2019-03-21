@@ -25,8 +25,8 @@ const Sidebar = (props) => {
                 <div className={classes}>
                   <img src={placeholder} alt="placeholder" className="participant__img" />
                   <div className="participant__text">
-                    <CText weight="bold">{team.name}</CText>
-                    <CText>{team.speaker}</CText>
+                    <CText weight="bold" letterSpacing="3">{team.name}</CText>
+                    <CText letterSpacing="3">{team.speaker}</CText>
                   </div>
                   <div className="participant__circles">
                       <span className="circle" />
