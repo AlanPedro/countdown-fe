@@ -47,7 +47,7 @@ class StandupPage extends React.Component {
           <Sidebar teams={standup.teams} current={{team: standup.currentTeam, speaker: standup.currentSpeaker}} />
           <div className="standup-page__main-view">
               <LoadingBar allocation={standup.teams.find(team => team.name === standup.currentTeam).allocationInSeconds} timeLeft={standup.time} />
-              <h1 className="title">{standup.name}</h1>
+              <h1 className="title">{standup.displayName}</h1>
               <div className="speaker">
                 <h1>{standup.currentTeam}</h1>
                 <h2>{standup.currentSpeaker}</h2>
