@@ -8,11 +8,11 @@
     color: white;
     font-weight: $bold;
     
-    .primary {
+    &.primary {
         background: linear-gradient(to right, $linear-grad-start, $linear-grad-start, $linear-grad-start, $linear-grad-end);
     }
 
-    .secondary {
+    &.secondary {
         
     }
 

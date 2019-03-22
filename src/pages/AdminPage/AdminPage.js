@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import posed, { PoseGroup } from 'react-pose';
+import { Alert } from 'react-bootstrap';
+import _ from 'lodash';
 
 import './AdminPage.scss';
 import { actions } from '../../ducks/standup/standup';
@@ -8,6 +10,10 @@ import RoundButton from '../../components/RoundButton/RoundButton';
 import BackButton from '../../components/BackButton/BackButton';
 import Popup from '../../components/Popup/Popup';
 import CTextInput from '../../components/CTextInput/CTextInput';
+import CButton from '../../components/CButton/CButton';
+import AdminListItem from '../../components/AdminListItem/AdminListItem';
+import playIcon from '../../assets/play-48.png';
+import nextIcon from '../../assets/arrow-57-48.png';
 
 class AdminPage extends Component {
 
@@ -16,7 +22,9 @@ class AdminPage extends Component {
         this.state = {
             paused: true,
             started: false,
-            isAuthenticated: false
+            isAuthenticated: true,
+            password: "",
+            showError: false
         }
     }
 
@@ -50,46 +58,63 @@ class AdminPage extends Component {
         this.props.nextSpeaker();
     }
 
+    onInputChange = e => this.setState({ password: e.target.value })
+    signIn = () => {
+        if (this.state.password === "iamadmin") {
+            this.setState({ isAuthenticated: true });
+        } else {
+            this.setState({ showError: true });
+        }
+    }
+    
+
     render() {
         const { standup } = this.props;
-        console.log(this.props);
-        if (!this.state.isAuthenticated) 
-            return (
-                <Popup>
-                    <h1>
-                        You need to sign in to access the admin panel
-                    </h1>
-                    <CTextInput onChange={this.onInputChange} value={this.state.password} />
-                    <button onClick={this.signIn}>Sign In</button>
-                </Popup>
-            );
+        console.log(this.state);
+        if (_.isEmpty(standup)) return <h1>Loading...</h1>
         const { teams, currentTeam, currentSpeaker } = standup;
         const teamsToCome = teams.slice(teams.findIndex(team => currentTeam === team.name) + 1);
         return (
-            <div className="admin-page">
-                <BackButton className="abs back-btn" to="/" />
-                <h1 className="admin-page__name">{standup.name}</h1>
-                <h2 className="admin-page__timer">{standup.time}</h2>
-                <h2 className="admin-page__current">{currentTeam} - {currentSpeaker}</h2>
+            <React.Fragment>
 
-                <div className="admin-page__next-teams">
-                    <PoseGroup>
-                        {
-                            teamsToCome.map(team => (
-                                <PosedTeam key={team.name} className="next-teams__team">
-                                    <h3>{team.name}</h3>
-                                </PosedTeam>
-                            ))
-                        }
-                    </PoseGroup>
-                    <hr />
-                    <h3>Enter password to start</h3>
-                    <input type="text" onChange={this.onInputChange} value={this.state.password} />
+                <Popup show={!this.state.isAuthenticated}>
+                    <h1 style={{ marginTop: '0'}}>
+                        You need to sign in to access the admin panel
+                    </h1>
+                    { this.state.showError &&
+                    <Alert variant='danger'>
+                        Wrong password, try again
+                    </Alert>
+                    }
+                    <CTextInput onChange={this.onInputChange} value={this.state.password} />
+                    <CButton onClick={this.signIn} value="Sign In" />
+                </Popup>
+                <div className={`admin-page ${!this.state.isAuthenticated ? "blurred" : ""}`}>
+                    
+                    <BackButton className="abs back-btn" to="/" />
+                    <span className="admin-page__name">{standup.displayName}</span>
+                    <h2 className="admin-page__timer">{standup.time}</h2>
+                    <h2 className="admin-page__current">{currentTeam} - {currentSpeaker}</h2>
+
+                    <div className="admin-page__next-teams">
+                        <PoseGroup>
+                            {
+                                teamsToCome.map(team => (
+                                    <PosedTeam key={team.name} className="next-teams__team">
+                                        <AdminListItem />
+                                    </PosedTeam>
+                                ))
+                            }
+                        </PoseGroup>
+                    </div>
+                    <div className="admin-page__buttons">
+                        {/* {this.renderButtons()} */}
+                        <img src={nextIcon} alt="Back" />
+                        <img src={playIcon} alt="Play" />
+                        <img src={nextIcon} alt="Next" />
+                    </div>
                 </div>
-                <div className="admin-page__buttons">
-                    {this.renderButtons()}
-                </div>
-            </div>
+            </React.Fragment>
         );
     }
 }

@@ -5,10 +5,6 @@
     width: 100vw;
     height: 100vh;
     background: rgba(55, 55, 55, 0.3);
-
-
-    filter: blur(4px);
-    -webkit-filter: blur(4px);
 }
 .popup-container {
     position: absolute;
@@ -19,23 +15,23 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 1;
 
     .popup {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
         width: 40vw;
         min-width: 250px;
-        height: 40vh;
-        min-height: 350px;
-        position: relative;
+        height: 35vh;
+        min-height: 200px;
+        bottom: 50px;
         margin: auto;
         padding: 25px;
         text-align: center;
-        height: 50vh;
-        background: rgb(255,255,255);
+        background: white;
         border-radius: 10px;
-        display: flex;
-        flex-direction: column;
-        box-shadow: -1px 0px 15px 5px #aaaaaab2;
-        justify-content: space-evenly;
-        
+        box-shadow: -1px 0px 15px 5px #aaaaaab2
     }
 }

@@ -1,9 +1,11 @@
+@import "../../styles/variables";
+
 .admin-page {
     text-align: center;
     display: grid;
     height: 100vh;
     grid-template-areas: 
-        "name"
+        "navbar"
         "timer"
         "current"
         "next"
@@ -11,9 +13,23 @@
     ;
     grid-template-rows: 1fr 1fr 1fr 8fr 3fr;
     grid-row-gap: 10px;
+    // background-color: grey;
+    // background: linear-gradient(to bottom, #3A4257, #5D7594, #5D7594, #5D7594);
+    // background-image: url("../../assets/background.jpg");
+    // background-position: center;
+    background: linear-gradient(to bottom, $linear-grad-start,$linear-grad-end);
 
     .admin-page__name {
-        grid-area: name;
+        grid-area: navbar;
+        box-shadow: -1px 0px 10px 3px purple;
+        background: linear-gradient(to bottom, $linear-grad-start, $linear-grad-end);
+        // background: linear-gradient(to bottom, #3A4257, #5D7594);
+        color: white;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
     }
     .admin-page__timer {
         grid-area: timer;
@@ -24,30 +40,21 @@
     
     .admin-page__next-teams {
         grid-area: next;
-        margin: 0 60px;
-        
-        .next-teams__team {
-            &:first-of-type {
-                border-top-width: 1px;
-                border-top-right-radius: 10px;
-                border-top-left-radius: 10px;
-            }
-            &:last-of-type {
-                border-bottom-width: 1px;
-                border-bottom-right-radius: 10px;
-                border-bottom-left-radius: 10px;
-            }
-            border-width: 0.5px 1px;
-            border-style: solid;
-            h3 {
-                margin: 0;
-                padding: 10px;
-            }
-        }
     }
+
     .admin-page__buttons {
         grid-area: buttons;
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        left: 0;
         display: flex;
+        box-shadow: -1px 0px 10px 3px purple;
+        background: linear-gradient(to bottom, $linear-grad-start, $linear-grad-end);
+        color: white;
+        height: 100px;
+        align-items: center;
         justify-content: space-evenly;
+        padding: 0 50px;
     }
 }

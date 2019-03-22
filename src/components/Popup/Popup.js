@@ -5,8 +5,8 @@ import './Popup.scss';
 
 const Popup = props => (
     <React.Fragment>
-        <div className="popup-bg" />
-        <div className="popup-container">
+        <div className="popup-bg" style={{ display: props.show ? "block": "none"}} />
+        <div className="popup-container" style={{ display: props.show ? "flex": "none"}}>
             <div className="popup">
                 {props.children}
             </div>
@@ -21,7 +21,8 @@ Popup.propTypes = {
           PropTypes.func,
           PropTypes.node
         ]).isRequired
-      ).isRequired
+      ).isRequired,
+    show: PropTypes.bool.isRequired
 }
 
 export default Popup;

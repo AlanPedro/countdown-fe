@@ -52,6 +52,7 @@
             .participant {
                 height: 70px;
                 display: grid;
+                box-sizing: content-box;
                 grid-template-areas: 
                     "photo text circles"
                 ;

@@ -4,7 +4,7 @@ import './CButton.scss';
 
 const CButton = props => (
     <button 
-        className="c-button"
+        className="c-button primary"
         onClick={props.onClick}
         >
         {props.value}

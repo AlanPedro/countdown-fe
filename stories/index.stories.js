@@ -5,8 +5,9 @@ import CTextInput from '../src/components/CTextInput/CTextInput';
 import Popup from '../src/components/Popup/Popup';
 import CButton from '../src/components/CButton/CButton';
 import CText from '../src/components/CText/CText';
-import BackButton from '../src/components/BackButton/BackButton';
+import AdminListItem from '../src/components/AdminListItem/AdminListItem';
 import '../src/App.scss';
+import '../node_modules/react-bootstrap/dist/react-bootstrap';
 import RoundButton from '../src/components/RoundButton/RoundButton';
 
 storiesOf('CTextInput', module)
@@ -43,4 +44,22 @@ storiesOf('CText', module)
 storiesOf('RoundButton', module)
     .add('normal', () => (
         <RoundButton></RoundButton>
+    ))
+
+storiesOf('AdminListItem', module)
+    .add('normal', () => (
+        <AdminListItem />
+    ))
+    .add('list', () => (
+        <div style={{ 
+            width: "400px",
+             margin: '10px',
+             padding: '150px',
+              background: "#F9EEEF"}}>
+            <AdminListItem active={true} />
+            <AdminListItem />
+            <AdminListItem />
+            <AdminListItem />
+            <AdminListItem />
+        </div>
     ))
