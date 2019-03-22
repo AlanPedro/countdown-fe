@@ -11,7 +11,9 @@ const ERROR_INITIALISING = "duck/standup/ERROR_INITIALISING";
 const START = "duck/standup/START";
 const UPDATE = "duck/standup/UPDATE";
 const PAUSE = "duck/standup/PAUSE";
-const NEXT_SPEAKER = "duck/standup/NEXT_SPEAKER"
+const LEAVE = "duck/standup/LEAVE";
+const UNPAUSE = "duck/standup/UNPAUSE";
+const NEXT_SPEAKER = "duck/standup/NEXT_SPEAKER";
 const RESET = "duck/standup/RESET";
 
 // Reducer
@@ -28,22 +30,23 @@ export default function reducer(state = {}, action) {
                 currentSpeaker: first.speaker,
                 time: first.allocationInSeconds,
                 live: false
-            }
+            };
         case UPDATE:
             const { name, speaker, remainingSeconds, status } = action.payload.standup;
             return {
                 teams: state.teams,
+                name: state.name,
+                displayName: state.displayName,
                 currentTeam: name,
                 currentSpeaker: speaker,
                 time: status === "paused" ? state.time : remainingSeconds,
-                name: state.name,
-                live: true
-            }; 
+                live: true,
+            };
         case ERROR_INITIALISING:
             console.log("Error getting standup");
             return state;
-        case "LEAVE_STANDUP":
-            return _.merge(state, { live: false })
+        case LEAVE:
+            return _.merge(state, { live: false });
         default:
             return state;
     }
@@ -51,10 +54,12 @@ export default function reducer(state = {}, action) {
 
 // Actions
 const getAllStandups = () => ({ type: GET_ALL });
-const startStandup = () => ({ type: START })
+const startStandup = () => ({ type: START });
 const pauseStandup = () => ({ type: PAUSE });
+const unpauseStandup = () => ({ type: UNPAUSE });
+const leaveStandup = () => ({ type: LEAVE});
 const toNextSpeaker = () => ({type: NEXT_SPEAKER});
-const joinStandup = name => ({ type: JOIN, payload: { name } })
+const joinStandup = name => ({ type: JOIN, payload: { name } });
 const initialiseStandup = standup => ({ type: INITIALISE, payload: { standup } });
 const errorInitialisingStandup = (id, message) => ( { 
     type: ERROR_INITIALISING,
@@ -76,8 +81,10 @@ export const actions = {
     updateStandup,
     pauseStandup,
     toNextSpeaker,
-    joinStandup
-}
+    joinStandup,
+    unpauseStandup,
+    leaveStandup
+};
 
 export const types = {
     GET_ALL,
@@ -90,5 +97,7 @@ export const types = {
     UPDATE,
     PAUSE,
     NEXT_SPEAKER,
-    RESET
-}
+    RESET,
+    UNPAUSE,
+    LEAVE
+};

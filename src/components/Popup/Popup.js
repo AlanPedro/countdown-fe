@@ -23,6 +23,6 @@ Popup.propTypes = {
         ]).isRequired
       ).isRequired,
     show: PropTypes.bool.isRequired
-}
+};
 
 export default Popup;

@@ -22,9 +22,8 @@
         display: flex;
         flex-direction: column;
         justify-content: space-evenly;
-        width: 40vw;
+        max-width: 100vw;
         min-width: 250px;
-        height: 35vh;
         min-height: 200px;
         bottom: 50px;
         margin: auto;

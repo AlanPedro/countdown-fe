@@ -4,13 +4,14 @@
   "private": true,
   "homepage": "https://alanpedro.github.io/countdown-fe/",
   "dependencies": {
+    "@material-ui/core": "^3.9.2",
+    "@material-ui/icons": "^3.0.2",
     "axios": "^0.18.0",
     "lodash": "^4.17.11",
     "node-sass": "^4.11.0",
     "prop-types": "^15.7.0",
-    "react": "^16.7.0",
-    "react-bootstrap": "^1.0.0-beta.6",
-    "react-dom": "^16.7.0",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
     "react-pose": "^4.0.6",
     "react-redux": "^6.0.0",
     "react-router-dom": "^5.0.0",
@@ -40,7 +41,7 @@
   "devDependencies": {
     "@babel/core": "^7.1.6",
     "@storybook/react": "^5.0.3",
-    "babel-loader": "^8.0.5",
+    "babel-loader": "8.0.4",
     "gh-pages": "^2.0.1"
   }
 }

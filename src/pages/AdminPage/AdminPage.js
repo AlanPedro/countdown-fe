@@ -1,123 +1,111 @@
-import React, { Component } from 'react';
+import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import posed, { PoseGroup } from 'react-pose';
-import { Alert } from 'react-bootstrap';
+import PlayArrow from '@material-ui/icons/PlayArrowRounded';
+import SkipNext from '@material-ui/icons/SkipNextRounded';
+import Pause from '@material-ui/icons/PauseRounded';
+import Divider from "@material-ui/core/es/Divider/Divider";
 import _ from 'lodash';
 
 import './AdminPage.scss';
 import { actions } from '../../ducks/standup/standup';
-import RoundButton from '../../components/RoundButton/RoundButton';
-import BackButton from '../../components/BackButton/BackButton';
-import Popup from '../../components/Popup/Popup';
-import CTextInput from '../../components/CTextInput/CTextInput';
-import CButton from '../../components/CButton/CButton';
 import AdminListItem from '../../components/AdminListItem/AdminListItem';
-import playIcon from '../../assets/play-48.png';
-import nextIcon from '../../assets/arrow-57-48.png';
+import LoadingBar from "../../components/LoadingBar/LoadingBar";
+import CurrentCard from "../../components/CurrentCard/CurrentCard";
+import AuthenticationPopup from "../../components/AuthenticationPopup/AuthenticationPopup";
 
-class AdminPage extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            paused: true,
-            started: false,
-            isAuthenticated: true,
-            password: "",
-            showError: false
+const AdminPage = props => {
+
+    useEffect(() => {
+        props.initialiseStandup(props.match.params.name);
+
+        // WillUnmount
+        return () => {
+            props.leaveStandup(props.match.params.name);
         }
-    }
+    }, []);
 
-    componentDidMount = () => this.props.initialiseStandup(this.props.match.params.name);
+    const [paused, setPause] = useState(true);
+    const [started, setStarted] = useState(false);
+    const [authenticated, setAuthenticated] = useState(false);
 
-    renderButtons = () => {
-        const button = !this.state.started 
-                        ?  <RoundButton onClick={this.start}>START</RoundButton>
-                        :  this.state.paused ? <RoundButton disabled={true} onClick={this.pause}>PAUSE</RoundButton>
-                                             : <RoundButton onClick={this.pause}>PAUSE</RoundButton>
-        return (
-            <React.Fragment>
-                {button}
-                <RoundButton onClick={this.next}>NEXT</RoundButton>
-            </React.Fragment>
-        )
-    }
-
-    start = () => {
-        this.setState({ paused: false, started: true })
-        this.props.startStandup();
-    }
-    
-    pause = () => {
-        this.setState({ paused: true })
-        this.props.pauseStandup()
-    }
-    
-    next = () => {
-        this.setState({ paused: false })
-        this.props.nextSpeaker();
-    }
-
-    onInputChange = e => this.setState({ password: e.target.value })
-    signIn = () => {
-        if (this.state.password === "iamadmin") {
-            this.setState({ isAuthenticated: true });
+    const start = () => {
+        if (started) {
+            props.unpauseStandup()
         } else {
-            this.setState({ showError: true });
+            setStarted(true);
+            props.startStandup();
         }
-    }
-    
+        setPause(false);
+    };
 
-    render() {
-        const { standup } = this.props;
-        console.log(this.state);
-        if (_.isEmpty(standup)) return <h1>Loading...</h1>
-        const { teams, currentTeam, currentSpeaker } = standup;
-        const teamsToCome = teams.slice(teams.findIndex(team => currentTeam === team.name) + 1);
-        return (
-            <React.Fragment>
+    const pause = () => {
+        setPause(true);
+        props.pauseStandup()
+    };
 
-                <Popup show={!this.state.isAuthenticated}>
-                    <h1 style={{ marginTop: '0'}}>
-                        You need to sign in to access the admin panel
-                    </h1>
-                    { this.state.showError &&
-                    <Alert variant='danger'>
-                        Wrong password, try again
-                    </Alert>
-                    }
-                    <CTextInput onChange={this.onInputChange} value={this.state.password} />
-                    <CButton onClick={this.signIn} value="Sign In" />
-                </Popup>
-                <div className={`admin-page ${!this.state.isAuthenticated ? "blurred" : ""}`}>
-                    
-                    <BackButton className="abs back-btn" to="/" />
-                    <span className="admin-page__name">{standup.displayName}</span>
-                    <h2 className="admin-page__timer">{standup.time}</h2>
-                    <h2 className="admin-page__current">{currentTeam} - {currentSpeaker}</h2>
+    const next = () => {
+        setPause(false);
+        props.nextSpeaker();
+    };
 
+    const { standup } = props;
+    if (_.isEmpty(standup)) return <h1>Loading...</h1>;
+    const { teams, currentTeam, currentSpeaker, time } = standup;
+    const teamsToCome = teams.slice(teams.findIndex(team => currentTeam === team.name) + 1);
+
+    return (
+        <React.Fragment>
+
+            <AuthenticationPopup
+                show={!authenticated}
+                onAuthentication={() => setAuthenticated(true)}
+            />
+
+            <div id="blur-container" className="blur-container">
+                <div className={`admin-page ${!authenticated ? "blurred" : ""}`}>
+                    <CurrentCard
+                        title={currentSpeaker}
+                        subtitle={currentTeam}
+                        sideIcon={time}
+                    />
                     <div className="admin-page__next-teams">
+                        <Divider />
                         <PoseGroup>
                             {
                                 teamsToCome.map(team => (
-                                    <PosedTeam key={team.name} className="next-teams__team">
-                                        <AdminListItem />
-                                    </PosedTeam>
+                                        <PosedTeam key={team.name} className="next-teams__team">
+                                            <AdminListItem id={team.id} name={team.speaker} time={team.allocationInSeconds}  />
+                                            <Divider />
+                                        </PosedTeam>
                                 ))
                             }
                         </PoseGroup>
                     </div>
-                    <div className="admin-page__buttons">
-                        {/* {this.renderButtons()} */}
-                        <img src={nextIcon} alt="Back" />
-                        <img src={playIcon} alt="Play" />
-                        <img src={nextIcon} alt="Next" />
+                    <div className="admin-page__bottom-bar">
+                        <LoadingBar
+                            allocation={standup.teams.find(team => team.name === standup.currentTeam).allocationInSeconds}
+                            timeLeft={standup.time}
+                            height="10px"
+                            className="admin-page__loading-bar"
+                        />
+                        <div className="admin-page__buttons">
+                            {
+                                paused ?
+                                    <PlayArrow fontSize="inherit" onClick={() => start()} />
+                                    :
+                                    <Pause fontSize="inherit" onClick={() => pause()} />
+                            }
+                            <SkipNext fontSize="inherit" onClick={() => next()} />
+                        </div>
                     </div>
                 </div>
-            </React.Fragment>
-        );
-    }
-}
+            </div>
+        </React.Fragment>
+    )
+};
+
 
 const PosedTeam = posed.div({
     enter: { opacity : 1},
@@ -128,15 +116,17 @@ const mapStateToProps = state => (
     {
       standup: state.standup
     }
-)
+);
 
 const mapDispatchToProps = dispatch => (
   {
     initialiseStandup: name => dispatch(actions.loadStandup(name)),
     startStandup: () => dispatch(actions.startStandup()),
     pauseStandup: () => dispatch(actions.pauseStandup()),
-    nextSpeaker: () => dispatch(actions.toNextSpeaker())
+    nextSpeaker: () => dispatch(actions.toNextSpeaker()),
+    unpauseStandup: () => dispatch(actions.unpauseStandup()),
+    leaveStandup: name => dispatch(actions.leaveStandup(name))
   }
-)
+);
 
 export default connect(mapStateToProps, mapDispatchToProps)(AdminPage);

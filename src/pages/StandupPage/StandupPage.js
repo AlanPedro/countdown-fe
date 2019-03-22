@@ -1,83 +1,71 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 
 import Sidebar from '../../components/Sidebar/Sidebar';
 import LoadingBar from '../../components/LoadingBar/LoadingBar';
 import Timer from '../../components/Timer/Timer';
-import "./StandupPage.scss";
 import { actions } from "../../ducks/standup/standup";
-import BackButton from '../../components/BackButton/BackButton';
+import "./StandupPage.scss";
+import Typography from "@material-ui/core/es/Typography/Typography";
 
-class StandupPage extends React.Component {
+const StandupPage = props => {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      window: {
-        height: 0,
-        width: 0
-      }
-    }
-  }
+    useEffect(() => {
+        //DidMount & DidUpdate
+        props.joinStandup(props.match.params.name);
 
-  componentDidMount = () => {
-    this.updateWindowDimensions();
-    this.props.joinStandup(this.props.match.params.name);
-    window.addEventListener('resize', this.updateWindowDimensions);
-    window.onpopstate = e => this.componentWillUnmount;
-  }
+        // WillUnmount
+        return () => {
+            props.leaveStandup(props.match.params.name);
+        }
+    }, []);
 
-  componentWillUnmount = () => {
-    this.props.leaveStandup(this.props.match.params.name)
-    window.removeEventListener('resize', this.updateWindowDimensions);
-  }
+    const renderTimer = time => time <= 10 ? <Timer time={time} /> : null;
+    const { standup } = props;
 
-  
-  updateWindowDimensions = () => this.setState({ window : { width: window.innerWidth, height: window.innerHeight }});
-  
-  renderTimer = time => time <= 10 ? <Timer time={time} /> : <React.Fragment />; 
+    if (!standup.teams) return <div> Loading... </div>;
 
-  render() {
-    const { standup } = this.props;
-    if (_.isEmpty(standup.teams)) return <div> Hi </div>;
     return (
         <div className="standup-page">
-          <BackButton className="abs back-btn" to="/" />
-          <Sidebar teams={standup.teams} current={{team: standup.currentTeam, speaker: standup.currentSpeaker}} />
-          <div className="standup-page__main-view">
-              <LoadingBar allocation={standup.teams.find(team => team.name === standup.currentTeam).allocationInSeconds} timeLeft={standup.time} />
-              <h1 className="title">{standup.displayName}</h1>
-              <div className="speaker">
-                <h1>{standup.currentTeam}</h1>
-                <h2>{standup.currentSpeaker}</h2>
-                {this.renderTimer(standup.time)}
-              </div>
-          </div>
-          { !standup.live &&
-            <div className="standup-off-fg">
-              <div className="refresh-container">
-                  <h1>Standup is not live!</h1>
-                  <button value="Refresh Page" onClick={() => window.location.reload() }>Refresh page</button>
-              </div>
-            </div>
-          }
-        </div>
+             <Sidebar teams={standup.teams} current={{team: standup.currentTeam, speaker: standup.currentSpeaker}} />
+             <div className="standup-page__main-view">
+                 <LoadingBar
+                     className="main-view__loading-bar"
+                     allocation={standup.teams.find(team => team.name === standup.currentTeam).allocationInSeconds}
+                     timeLeft={standup.time}
+                 />
+                 <Typography variant="h3" className="title">{standup.displayName}</Typography>
+                 <div className="speaker">
+                    <Typography variant="h3">{standup.currentSpeaker}</Typography>
+                    <Typography variant="h4" color="textSecondary">{standup.currentTeam}</Typography>
+
+                   {renderTimer(standup.time)}
+                 </div>
+             </div>
+             {
+                !standup.live &&
+                <div className="standup-off-fg">
+                    <div className="refresh-container">
+                     <h1>Standup is not live!</h1>
+                     <button value="Refresh Page" onClick={() => window.location.reload() }>Refresh page</button>
+                    </div>
+                </div>
+             }
+       </div>
     )
-  }
-}
+};
 
 const mapStateToProps = (state) => (
     {
       standup: state.standup
     }
-)
+);
 
 const mapDispatchToProps = dispatch => (
   {
     joinStandup: (name) => dispatch(actions.joinStandup(name)),
-    leaveStandup: (name) => dispatch({type: "LEAVE_STANDUP"})
+    leaveStandup: (name) => dispatch(actions.leaveStandup(name))
   }
-)
+);
 
 export default connect(mapStateToProps, mapDispatchToProps)(StandupPage);

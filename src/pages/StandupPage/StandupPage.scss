@@ -1,14 +1,17 @@
+@import "../../styles/variables";
+
 .standup-page {
     display: grid;
     grid-template-areas: 
     "sidebar main"
     ;
     grid-template-columns: 25% 75%;
-    height: 100vh;
+    height: inherit;
     // overflow: hidden;
 
     .standup-page__side-bar {
         grid-area: sidebar;
+        height: inherit;
         background-color: #fafafa;
         padding-top: 50px;
         display: grid;
@@ -116,6 +119,7 @@
 
     .standup-page__main-view {
         grid-area: main;
+        height: inherit;
         background-color: white;
         box-shadow: -1px 0px 10px 0.5px #aaaaaa;
         display: grid;
@@ -123,10 +127,14 @@
             "loading"
             "title"
             "speaker"
-            "timer"
             ;
-        grid-template-rows: 50px 150px 2fr 1fr;
+        grid-template-rows: 40px 150px 1fr;
         grid-row-gap: 20px;
+        padding-bottom: 100px;
+
+        .main-view__loading-bar {
+            background-image: linear-gradient(to right, $linear-grad-start, $linear-grad-end);
+        }
 
         .abs-br {
             position: absolute;
@@ -146,7 +154,7 @@
             border-radius: 20px;
             box-shadow: -1px 0px 15px 5px #aaaaaa;
             text-align: center;
-            padding: 15px;
+            padding: 50px 15px 15px;
             display: grid;
             grid-template-rows: 70px 70px 1fr;
         }

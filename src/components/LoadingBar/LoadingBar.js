@@ -9,12 +9,12 @@ const PosedLoadingBar = posed.div({
         width: ({timePassed}) => `${timePassed}%`,
         transition: { ease: 'linear', duration: 1000 },
       }
-})
+});
 
-const LoadingBar = ({allocation, timeLeft}) => (
+const LoadingBar = ({allocation, timeLeft, className}) => (
     <div className="loading-bar">
-        <PosedLoadingBar 
-            className="filler" 
+        <PosedLoadingBar
+            className={`filler ${className}`}
             timePassed={timeLeft / allocation * 100}
             pose={"passTime"}
             poseKey={timeLeft}
@@ -23,11 +23,14 @@ const LoadingBar = ({allocation, timeLeft}) => (
 );
 
 LoadingBar.propTypes = {
-    percentage: PropTypes.number.isRequired
-}
+    allocation: PropTypes.number.isRequired,
+    timeLeft: PropTypes.number.isRequired,
+    className: PropTypes.string
+};
 
 LoadingBar.defaultProps = {
-    percentage: 0
-}
+    allocation: 60,
+    timeLeft: 60
+};
 
 export default LoadingBar;
