@@ -19,7 +19,8 @@ Popup.propTypes = {
     children: PropTypes.arrayOf(
         PropTypes.oneOfType([
           PropTypes.func,
-          PropTypes.node
+          PropTypes.node,
+          PropTypes.object
         ]).isRequired
       ).isRequired,
     show: PropTypes.bool.isRequired

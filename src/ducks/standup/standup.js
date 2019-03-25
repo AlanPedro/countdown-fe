@@ -22,8 +22,13 @@ export default function reducer(state = {}, action) {
         case INITIALISE:
             const { standup } = action.payload;
             const first = standup.teams.find(_ => true);
+
+            // Todo remove
+            const teams = standup.teams.map(t => Object.assign(t, { randomNumber: Math.random()} ));
+
             return {
-                teams: standup.teams,
+                teams: teams,
+                // teams: standup.teams,
                 name: standup.name,
                 displayName: standup.displayName,
                 currentTeam: first.name,

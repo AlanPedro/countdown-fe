@@ -8,7 +8,7 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 import MeetingRoomRounded from '@material-ui/icons/MeetingRoomRounded';
 import PermIdentityRounded from '@material-ui/icons/PermIdentityRounded';
 import HomeRounded from '@material-ui/icons/HomeRounded';
-import {withRouter, Link} from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 
 import './Navbars.scss';
@@ -17,9 +17,8 @@ const Navbars = props => {
     useEffect(() => {
         if (props.location.pathname.includes('admin')) setValue(2);
         else if (props.location.pathname.includes('standups')) setValue(0);
-        else if (props.location.pathname === '/') setValue(1)
-
-    }, []);
+        else if (props.location.pathname === '/') setValue(1);
+    }, [props.location.pathname]);
 
     const [value, setValue] = useState(0);
 
@@ -54,9 +53,9 @@ const Navbars = props => {
 
     const renderBackButton = url =>
         url !== "/" ?
-            <Link to="/" style={{ color: 'white'}}>
+            <div onClick={() => props.history.goBack()} style={{ color: 'white', cursor: 'pointer'}}>
                 <ArrowBack role="button" />
-            </Link>
+            </div>
             :
             null;
 

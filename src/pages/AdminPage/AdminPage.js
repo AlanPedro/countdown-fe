@@ -75,7 +75,7 @@ const AdminPage = props => {
                         <PoseGroup>
                             {
                                 teamsToCome.map(team => (
-                                        <PosedTeam key={team.name} className="next-teams__team">
+                                        <PosedTeam key={team.name + " - " + team.speaker} className="next-teams__team">
                                             <AdminListItem id={team.id} name={team.speaker} time={team.allocationInSeconds}  />
                                             <Divider />
                                         </PosedTeam>

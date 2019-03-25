@@ -23,7 +23,7 @@ class App extends Component {
               <Route path="/standups" exact component={HomePage} />
               <Route path="/" exact component={WelcomePage} />
 
-              {/* Fallback*/}
+              {/* Fallback */}
               <Route path="/" render={() => <Redirect to="/" />} />
 
             </Switch>
