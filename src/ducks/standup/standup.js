@@ -16,6 +16,9 @@ const UNPAUSE = "duck/standup/UNPAUSE";
 const NEXT_SPEAKER = "duck/standup/NEXT_SPEAKER";
 const RESET = "duck/standup/RESET";
 
+const EDIT = "duck/standup/EDIT";
+const CREATE = "duck/standup/CREATE";
+
 // Reducer
 export default function reducer(state = {}, action) {
     switch(action.type) {
@@ -27,6 +30,7 @@ export default function reducer(state = {}, action) {
             const teams = standup.teams.map(t => Object.assign(t, { randomNumber: Math.random()} ));
 
             return {
+                id: standup.id,
                 teams: teams,
                 // teams: standup.teams,
                 name: standup.name,
@@ -34,18 +38,22 @@ export default function reducer(state = {}, action) {
                 currentTeam: first.name,
                 currentSpeaker: first.speaker,
                 time: first.allocationInSeconds,
-                live: false
+                live: false,
+                paused: true
             };
         case UPDATE:
-            const { name, speaker, remainingSeconds, status } = action.payload.standup;
+            const { name, speaker, remainingSeconds } = action.payload.standup;
             return {
+                id: state.id,
                 teams: state.teams,
+                // teams: standup.teams,
                 name: state.name,
                 displayName: state.displayName,
+                live: true,
                 currentTeam: name,
                 currentSpeaker: speaker,
-                time: status === "paused" ? state.time : remainingSeconds,
-                live: true,
+                time: remainingSeconds,
+                paused: state.time === remainingSeconds
             };
         case ERROR_INITIALISING:
             console.log("Error getting standup");
@@ -59,6 +67,7 @@ export default function reducer(state = {}, action) {
 
 // Actions
 const getAllStandups = () => ({ type: GET_ALL });
+const getStandupByName = name => ({ type: GET_BY_NAME, payload: { name } });
 const startStandup = () => ({ type: START });
 const pauseStandup = () => ({ type: PAUSE });
 const unpauseStandup = () => ({ type: UNPAUSE });
@@ -76,6 +85,8 @@ const updateStandup = standup => ({
 });
 
 const loadStandup = name => ({ type: LOAD, payload: { name } });
+const editStandup = (standup, onSuccess, onError) => ({ type: EDIT, payload: { standup, onSuccess: onSuccess, onError: onError } });
+const createStandup = (standup, onSuccess, onError) => ({ type: CREATE, payload: { standup, onSuccess: onSuccess, onError: onError } });
 
 export const actions = {
     getAllStandups,
@@ -88,7 +99,10 @@ export const actions = {
     toNextSpeaker,
     joinStandup,
     unpauseStandup,
-    leaveStandup
+    leaveStandup,
+    getStandupByName,
+    editStandup,
+    createStandup
 };
 
 export const types = {
@@ -104,5 +118,7 @@ export const types = {
     NEXT_SPEAKER,
     RESET,
     UNPAUSE,
-    LEAVE
+    LEAVE,
+    EDIT,
+    CREATE
 };

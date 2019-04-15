@@ -55,10 +55,6 @@
         left: 0;
         right: 0;
         display: grid;
-        grid-template-areas:
-            "loading"
-            "buttons"
-        ;
         grid-template-rows: 2px 1fr;
         //box-shadow: -1px 0px 10px 3px purple;
         background: linear-gradient(to bottom, $linear-grad-start, $linear-grad-end);
@@ -67,18 +63,8 @@
         //justify-content: space-evenly;
         //padding: 0 50px;
 
-
         .admin-page__loading-bar {
             background: white;
-            grid-area: loading;
-        }
-
-        .admin-page__buttons {
-            grid-area: buttons;
-            font-size: 75px;
-            display: flex;
-            align-items: center;
-            justify-content: space-evenly;
         }
 
     }

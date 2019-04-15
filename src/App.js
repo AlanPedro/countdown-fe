@@ -8,6 +8,8 @@ import AdminPage from './pages/AdminPage/AdminPage';
 import HomePage from './pages/HomePage/HomePage';
 import Navbars from "./components/Navbars/Navbars";
 import WelcomePage from "./pages/WelcomePage/WelcomePage";
+import EditPage from "./pages/EditPage/EditPage";
+import CreatePage from "./pages/CreatePage/CreatePage";
 
 class App extends Component {
   render() {
@@ -17,10 +19,13 @@ class App extends Component {
         <Router>
           <Navbars>
             <Switch>
-              <Route path="/admin/:name" exact component={AdminPage} />
+              <Route path="/admin/:name/edit" exact component={EditPage} />
+              <Route path="/admin/:name/start" exact component={AdminPage} />
+              <Route path="/admin/create" exact component={CreatePage} />
+              <Route path="/admin/:name/" exact render={routeProps => <HomePage {...routeProps} pageName={"adminPanel"} />} />
               <Route path="/standups/:name" exact component={StandupPage} />
-              <Route path="/admin" exact component={HomePage} />
-              <Route path="/standups" exact component={HomePage} />
+              <Route path="/standups/" exact render={routeProps => <HomePage {...routeProps} pageName={"client"} />} />
+              <Route path="/admin/" exact render={routeProps => <HomePage {...routeProps} pageName={"admin"} />} />
               <Route path="/" exact component={WelcomePage} />
 
               {/* Fallback */}

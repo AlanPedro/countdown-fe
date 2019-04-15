@@ -1,6 +1,7 @@
 import React from 'react';
 import CText from "../CText/CText";
 import RandomAvatar from "../RandomAvatar/RandomAvatar";
+import DraggableCircles from "../DraggableCircles/DraggableCircles";
 
 const ParticipantInfoBar = props => {
 
@@ -15,11 +16,7 @@ const ParticipantInfoBar = props => {
                     <CText weight="bold" letterSpacing="3">{team.name}</CText>
                     <CText letterSpacing="3">{team.speaker}</CText>
                 </div>
-                <div className="participant__circles">
-                    <span className="circle" />
-                    <span className="circle" />
-                    <span className="circle" />
-                </div>
+                <DraggableCircles size={3} className="participants-circles"/>
             </div>
             <hr className="participants__hr" />
         </React.Fragment>

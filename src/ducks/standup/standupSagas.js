@@ -21,10 +21,14 @@ const connect = wsUrl => {
     })
 };
 
+// Work out how to close old connections
 const createWebSocketChannel = socket => eventChannel(emit => {
     const handler = data => emit(data);
     socket.onmessage = message => handler(message);
-    return () => socket.close;
+    return () => {
+        socket.onmessage = null;
+        socket.close();
+    };
 });
 
 function* joinStandupWrapper(action) {
@@ -35,20 +39,60 @@ function* joinStandupWrapper(action) {
 }
 
 // Admin a standup
-function* startStandupWrapper(action) {
-    const runningStandup = yield fork(startStandup, action.payload.name);
+function* adminTest(action) {
+
+    // Do these in parallel
+    const standup = yield call(getStandup, action.payload.name);
+    const isLive = yield call(Api.isStandupLive, action.payload.name);
+
+    yield put(actions.initialiseStandup(standup));
+
+    if (isLive) {
+        yield call(joinAdminStandupWrapper, action)
+    } else {
+        yield take(types.START);
+        yield call(startAdminStandupWrapper, action)
+    }
+}
+
+function* joinAdminStandupWrapper(action){
+    const runningStandup = yield fork(joinStandupAsAdmin, action.payload.name, "join");
 
     yield take(types.LEAVE);
     yield cancel(runningStandup);
+}
+
+// Admin a standup
+function* startAdminStandupWrapper(action) {
+    const runningStandup = yield fork(joinStandupAsAdmin, action.payload.name, "start");
+
+    yield take(types.LEAVE);
+    yield cancel(runningStandup);
+}
+
+
+function* joinStandupAsAdmin(name, message) {
+    try {
+        const socket = yield call(connect, wsAdminUrl(name));
+        const channel = yield call(createWebSocketChannel, socket);
+        socket.send("connect");
+        socket.send(message);
+        yield fork(standupRead, channel);
+    } finally {
+        if (yield cancelled()) {
+            console.log("LEFT STANDUP")
+        }
+    }
 }
 
 // Joining a standup
 function* joinStandup(name) {
     try {
         const standup = yield call(getStandup, name);
+
+        yield put(actions.initialiseStandup(standup));
+
         if (standup) {
-            yield put(actions.initialiseStandup(standup));
-            
             const socket = yield call(connect, wsClientUrl(name));
             const channel = yield call(createWebSocketChannel, socket);
             yield fork(standupRead, channel);
@@ -60,32 +104,16 @@ function* joinStandup(name) {
     }
 }
 
+function* getStandupWrapper(action) {
+    const standup = yield call(getStandup, action.payload.name);
+    yield put(actions.initialiseStandup(standup))
+}
+
 function* getStandup(name) {
     try {
         return yield call(Api.getStandupByName, name);
     } catch (e) {
         yield put(actions.errorInitialisingStandup(name, e.message))
-    }
-}
-
-function* startStandup(name) {
-    try {
-        const standup = yield call(getStandup, name);
-
-        if (standup) {
-            yield put(actions.initialiseStandup(standup));
-
-            yield take(types.START);
-            const socket = yield call(connect, wsAdminUrl(name));
-            const channel = yield call(createWebSocketChannel, socket);
-
-            socket.send("start");
-            yield fork(standupRead, channel);
-        }
-    } finally {
-        if (yield cancelled()) {
-            console.log("LEFT STANDUP")
-        }
     }
 }
 
@@ -127,16 +155,49 @@ function* joinStandupListener() {
     yield takeLatest(types.JOIN, joinStandupWrapper);
 }
 
+function* getStandupListener() {
+    yield takeLatest(types.GET_BY_NAME, getStandupWrapper);
+}
+
 function* startStandupListener() {
-    yield takeLatest(types.LOAD, startStandupWrapper);
+    yield takeLatest(types.LOAD, adminTest);
+}
+
+function* editStandup(action) {
+    try {
+        yield call(Api.editStandup, action.payload.standup);
+        yield call(action.payload.onSuccess)
+    } catch (e) {
+        yield call(action.payload.onError, e.code)
+    }
+}
+
+function* createStandup(action) {
+    try {
+        yield call(Api.createStandup, action.payload.standup);
+        yield call(action.payload.onSuccess)
+    } catch (e) {
+        yield call(action.payload.onError, e.code)
+    }
+}
+
+function* editStandupListener() {
+    yield takeLatest(types.EDIT, editStandup)
+}
+
+function* createStandupListener() {
+    yield takeLatest(types.CREATE, createStandup)
 }
 
 const combinedSagas = [
     startStandupListener(),
     joinStandupListener(),
+    getStandupListener(),
+    editStandupListener(),
+    createStandupListener(),
     pauseStandup(),
     nextSpeaker(),
-    unpauseStandup()
+    unpauseStandup(),
 ];
 
 export default combinedSagas;

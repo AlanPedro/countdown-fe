@@ -10,7 +10,7 @@ const days = {
     "5": "Friday",
     "6": "Saturday",
     "0": "Sunday"
-}
+};
 
 const months = {
     "0": "January",
@@ -25,7 +25,7 @@ const months = {
     "9": "October",
     "10": "November",
     "11": "December",
-}
+};
 
 export const getDayAsString = date => (
     days[date.getDay()]
@@ -36,3 +36,8 @@ export const getDayAsString = date => (
 export const getPrettyDate = date => (
     `${date.getDate()} of ${months[date.getMonth()]}`
 );
+
+export const camelToTitle = camelCase =>
+    camelCase
+    .replace(/([A-Z])/g, (match) => ` ${match}`)
+    .replace(/^./, (match) => match.toUpperCase());

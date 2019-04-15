@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import posed, { PoseGroup } from 'react-pose';
-import PlayArrow from '@material-ui/icons/PlayArrowRounded';
-import SkipNext from '@material-ui/icons/SkipNextRounded';
-import Pause from '@material-ui/icons/PauseRounded';
+import styled from 'styled-components';
+
 import Divider from "@material-ui/core/es/Divider/Divider";
 import _ from 'lodash';
 
@@ -13,12 +12,16 @@ import AdminListItem from '../../components/AdminListItem/AdminListItem';
 import LoadingBar from "../../components/LoadingBar/LoadingBar";
 import CurrentCard from "../../components/CurrentCard/CurrentCard";
 import AuthenticationPopup from "../../components/AuthenticationPopup/AuthenticationPopup";
+import AdminControls from "../../components/AdminControls/AdminControls";
 
+const AdminLoadingBar = styled(LoadingBar)`
+    background: white;
+`;
 
 const AdminPage = props => {
 
     useEffect(() => {
-        props.initialiseStandup(props.match.params.name);
+        props.loadStandup(props.match.params.name);
 
         // WillUnmount
         return () => {
@@ -26,29 +29,11 @@ const AdminPage = props => {
         }
     }, []);
 
-    const [paused, setPause] = useState(true);
-    const [started, setStarted] = useState(false);
-    const [authenticated, setAuthenticated] = useState(false);
+    const [authenticated, setAuthenticated] = useState(true);
 
-    const start = () => {
-        if (started) {
-            props.unpauseStandup()
-        } else {
-            setStarted(true);
-            props.startStandup();
-        }
-        setPause(false);
-    };
-
-    const pause = () => {
-        setPause(true);
-        props.pauseStandup()
-    };
-
-    const next = () => {
-        setPause(false);
-        props.nextSpeaker();
-    };
+    const start = () => props.standup.live ? props.unpauseStandup() : props.startStandup();
+    const pause = () => props.pauseStandup();
+    const next = () => props.nextSpeaker();
 
     const { standup } = props;
     if (_.isEmpty(standup)) return <h1>Loading...</h1>;
@@ -84,21 +69,17 @@ const AdminPage = props => {
                         </PoseGroup>
                     </div>
                     <div className="admin-page__bottom-bar">
-                        <LoadingBar
+                        <AdminLoadingBar
                             allocation={standup.teams.find(team => team.name === standup.currentTeam).allocationInSeconds}
                             timeLeft={standup.time}
                             height="10px"
-                            className="admin-page__loading-bar"
                         />
-                        <div className="admin-page__buttons">
-                            {
-                                paused ?
-                                    <PlayArrow fontSize="inherit" onClick={() => start()} />
-                                    :
-                                    <Pause fontSize="inherit" onClick={() => pause()} />
-                            }
-                            <SkipNext fontSize="inherit" onClick={() => next()} />
-                        </div>
+                        <AdminControls
+                            paused={standup.paused}
+                            onPause={pause}
+                            onSkip={next}
+                            onStart={start}
+                        />
                     </div>
                 </div>
             </div>
@@ -120,8 +101,8 @@ const mapStateToProps = state => (
 
 const mapDispatchToProps = dispatch => (
   {
-    initialiseStandup: name => dispatch(actions.loadStandup(name)),
     startStandup: () => dispatch(actions.startStandup()),
+    loadStandup: name => dispatch(actions.loadStandup(name)),
     pauseStandup: () => dispatch(actions.pauseStandup()),
     nextSpeaker: () => dispatch(actions.toNextSpeaker()),
     unpauseStandup: () => dispatch(actions.unpauseStandup()),

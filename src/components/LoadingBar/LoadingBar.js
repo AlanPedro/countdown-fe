@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import posed from 'react-pose';
-
-import './LoadingBar.scss';
+import styled from 'styled-components';
 
 const PosedLoadingBar = posed.div({
     passTime: {
@@ -11,21 +10,35 @@ const PosedLoadingBar = posed.div({
       }
 });
 
-const LoadingBar = ({allocation, timeLeft, className}) => (
-    <div className="loading-bar">
+const LoadingBarContainer = styled.div`
+    width: 100%;
+    height: 100%;
+    
+    & > div {
+        height: 100%
+        background: ${props => props.background ? props.background : "white"}
+        background-image: ${props => props.backgroundImage ? props.backgroundImage : "none"}
+    }
+`;
+
+const LoadingBar = ({allocation, timeLeft, background, backgroundImage}) => (
+    <LoadingBarContainer
+        background={background}
+        backgroundImage={backgroundImage}
+    >
         <PosedLoadingBar
-            className={`filler ${className}`}
             timePassed={timeLeft / allocation * 100}
             pose={"passTime"}
             poseKey={timeLeft}
             />
-    </div>
+    </LoadingBarContainer>
 );
 
 LoadingBar.propTypes = {
     allocation: PropTypes.number.isRequired,
     timeLeft: PropTypes.number.isRequired,
-    className: PropTypes.string
+    background: PropTypes.string,
+    backgroundImage: PropTypes.string
 };
 
 LoadingBar.defaultProps = {
