@@ -21,12 +21,13 @@ const LoadingBarContainer = styled.div`
     }
 `;
 
-const LoadingBar = ({allocation, timeLeft, background, backgroundImage}) => (
+const LoadingBar = ({allocation, timeLeft, background, backgroundImage, className}) => (
     <LoadingBarContainer
         background={background}
         backgroundImage={backgroundImage}
     >
         <PosedLoadingBar
+            className={className}
             timePassed={timeLeft / allocation * 100}
             pose={"passTime"}
             poseKey={timeLeft}

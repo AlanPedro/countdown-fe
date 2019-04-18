@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import posed, { PoseGroup } from 'react-pose';
-import styled from 'styled-components';
 
 import Divider from "@material-ui/core/es/Divider/Divider";
 import _ from 'lodash';
@@ -13,17 +12,12 @@ import LoadingBar from "../../components/LoadingBar/LoadingBar";
 import CurrentCard from "../../components/CurrentCard/CurrentCard";
 import AuthenticationPopup from "../../components/AuthenticationPopup/AuthenticationPopup";
 import AdminControls from "../../components/AdminControls/AdminControls";
-
-const AdminLoadingBar = styled(LoadingBar)`
-    background: white;
-`;
+import SimpleSpinner from "../../components/SimpleSpinner/SimpleSpinner";
 
 const AdminPage = props => {
 
     useEffect(() => {
         props.loadStandup(props.match.params.name);
-
-        // WillUnmount
         return () => {
             props.leaveStandup(props.match.params.name);
         }
@@ -36,7 +30,7 @@ const AdminPage = props => {
     const next = () => props.nextSpeaker();
 
     const { standup } = props;
-    if (_.isEmpty(standup)) return <h1>Loading...</h1>;
+    if (_.isEmpty(standup)) return <SimpleSpinner />;
     const { teams, currentTeam, currentSpeaker, time } = standup;
     const teamsToCome = teams.slice(teams.findIndex(team => currentTeam === team.name) + 1);
 
@@ -69,10 +63,9 @@ const AdminPage = props => {
                         </PoseGroup>
                     </div>
                     <div className="admin-page__bottom-bar">
-                        <AdminLoadingBar
+                        <LoadingBar
                             allocation={standup.teams.find(team => team.name === standup.currentTeam).allocationInSeconds}
                             timeLeft={standup.time}
-                            height="10px"
                         />
                         <AdminControls
                             paused={standup.paused}

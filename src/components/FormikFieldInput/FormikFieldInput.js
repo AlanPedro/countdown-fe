@@ -7,13 +7,11 @@ const FormikFieldInput = ({
                               form: { touched, errors }, // also values, setXXXX, handleXXXX, dirty, isValid, status, etc.
                               ...props
                           }) => (
-    <React.Fragment>
-        <TextField
-            {...field}
-            label={camelToTitle(field.name)}
-            error={touched[field.name] && errors[[field.name]] !== ""}
-            helperText={touched[field.name] && errors[field.name] ? <span>{errors[field.name]}</span> : null}
-        />
-    </React.Fragment>
+    <TextField
+        {...field}
+        label={camelToTitle(field.name)}
+        error={touched[field.name] && errors[[field.name]] !== ""}
+        helperText={touched[field.name] && errors[field.name] ? <span>{errors[field.name]}</span> : null}
+    />
 );
 export default FormikFieldInput;

@@ -9,6 +9,7 @@ import Sidebar from '../../components/Sidebar/Sidebar';
 import LoadingBar from '../../components/LoadingBar/LoadingBar';
 import Popup from "../../components/Popup/Popup";
 import StandupCurrentSpeaker from "../../components/StandupCurrentSpeaker/StandupCurrentSpeaker";
+import SimpleSpinner from "../../components/SimpleSpinner/SimpleSpinner";
 
 
 const StandupPage = props => {
@@ -22,7 +23,7 @@ const StandupPage = props => {
 
     const [joined, setJoined] = useState(false);
     const { standup } = props;
-    if (!standup.teams) return <h1 style={{ textAlign: "center" }}> Loading... </h1>;
+    if (!standup.teams) return <SimpleSpinner />;
     return (
         <React.Fragment>
             <div className={`standup-page ${!joined ? "blurred" : ""}`}>
@@ -41,6 +42,15 @@ const StandupPage = props => {
                         number={standup.teams.find(t => t.name === standup.currentTeam).randomNumber}
                      />
                  </div>
+                 { standup.paused &&
+                 <div style={{
+                     background: 'rgba(90,90,90,0.5)',
+                     position: 'absolute', zIndex: '100000', fontSize: '100px',
+                     width: "100%", height: "100%", display: 'flex',
+                     alignItems: 'center', justifyContent: 'center' }}>
+                     PAUSED
+                 </div>
+                 }
             </div>
             <Popup show={!joined}>
                 <Typography variant="h4"> {standup.live ? "Standup is live!" : "Standup is not live!"} </Typography>

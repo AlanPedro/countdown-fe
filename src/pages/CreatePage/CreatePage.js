@@ -1,20 +1,40 @@
 import React, {useState} from 'react';
 import { connect } from 'react-redux';
+import styled  from 'styled-components';
 import Typography from "@material-ui/core/es/Typography/Typography";
 
 import {actions} from "../../ducks/standup/standup";
 import StandupForm from "../../components/StandupForm/StandupForm";
 import {NO_ERRORS} from "../../config/constants";
 
-const CreatePage = ({createStandup}) => {
+const StyledCreatePage = styled.div`
+      width: 100%;
+      height: 100%;
+      padding-top: 25px;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+`;
+
+const CreatePage = ({createStandup, history}) => {
 
     const [submitting, setSubmitting] = useState(false);
     const [errors, setErrors] = useState(NO_ERRORS);
 
+    const initialValues = {
+        displayName: "",
+        url: "",
+        teams: [
+            { name: "", speaker: "", allocationInSeconds: 60 },
+            { name: "", speaker: "", allocationInSeconds: 60 }
+        ]
+    };
+
     const saveStandup = standup => {
         setSubmitting(true);
         const newStandup = {
-            id: 0,
+            id: 0, // Will be set by the backend
             name: standup.url,
             displayName: standup.displayName,
             teams: standup.teams.map((t, i) => ({
@@ -24,7 +44,8 @@ const CreatePage = ({createStandup}) => {
         };
         const onSuccess = () => {
             setSubmitting(false);
-            setErrors(NO_ERRORS)
+            setErrors(NO_ERRORS);
+            history.push('/admin')
         };
         const onError = err => {
             setSubmitting(false);
@@ -40,9 +61,9 @@ const CreatePage = ({createStandup}) => {
     };
 
     return (
-        <div className="edit-page-container">
+        <StyledCreatePage>
             <Typography variant="h3" style={{ marginBottom: "20px" }}>
-                Edit Page
+                Create Standup Page
             </Typography>
             {errors !== NO_ERRORS && <Typography variant="h6" align="center">
                 {getErrors(errors)}
@@ -50,8 +71,9 @@ const CreatePage = ({createStandup}) => {
             <StandupForm
                 onSubmit={s => saveStandup(s)}
                 submitting={submitting}
+                initialValues={initialValues}
             />
-        </div>
+        </StyledCreatePage>
     )
 };
 

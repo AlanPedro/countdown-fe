@@ -2,7 +2,6 @@
 import _ from 'lodash';
 
 // Types
-const GET_ALL = "duck/standup/GET_ALL";
 const GET_BY_NAME = "duck/standup/GET_BY_NAME";
 const INITIALISE = "duck/standup/INITIALISE";
 const JOIN = "duck/standup/JOIN";
@@ -66,7 +65,6 @@ export default function reducer(state = {}, action) {
 }
 
 // Actions
-const getAllStandups = () => ({ type: GET_ALL });
 const getStandupByName = name => ({ type: GET_BY_NAME, payload: { name } });
 const startStandup = () => ({ type: START });
 const pauseStandup = () => ({ type: PAUSE });
@@ -89,7 +87,6 @@ const editStandup = (standup, onSuccess, onError) => ({ type: EDIT, payload: { s
 const createStandup = (standup, onSuccess, onError) => ({ type: CREATE, payload: { standup, onSuccess: onSuccess, onError: onError } });
 
 export const actions = {
-    getAllStandups,
     initialiseStandup,
     loadStandup,
     errorInitialisingStandup,
@@ -106,7 +103,6 @@ export const actions = {
 };
 
 export const types = {
-    GET_ALL,
     GET_BY_NAME,
     INITIALISE,
     JOIN,

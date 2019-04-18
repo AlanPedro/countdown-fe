@@ -56,12 +56,8 @@
         right: 0;
         display: grid;
         grid-template-rows: 2px 1fr;
-        //box-shadow: -1px 0px 10px 3px purple;
         background: linear-gradient(to bottom, $linear-grad-start, $linear-grad-end);
         color: white;
-        //align-items: center;
-        //justify-content: space-evenly;
-        //padding: 0 50px;
 
         .admin-page__loading-bar {
             background: white;

@@ -10,9 +10,10 @@ const StyledAdminControls = styled.div`
     font-size: 75px;
     align-items: center;
     justify-content: space-evenly;
+    & > svg {
+        cursor: pointer;
+    }
 `;
-
-const tesst = "grid-area: buttons;";
 
 const AdminControls = ({paused, onStart, onPause, onSkip}) => (
     <StyledAdminControls>

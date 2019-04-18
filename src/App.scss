@@ -29,18 +29,6 @@ body {
         }
     }
 
-    // h1 {
-    //     font-size: 1.2em;
-    //     line-height: 1.5em;
-    //     letter-spacing: 2px;
-    // }
-    // h2 {
-    //     font-size: 0.8em;
-    // }
-    // h3 {
-    //     font-size: 0.6em;
-    // }
-
     .circle {
         border-radius: 50%;
     }
@@ -74,23 +62,4 @@ body {
         }
 
     }
-}
-
-@media(min-width: 850px) {
-    // body {
-    //     h1 {
-    //         font-size: 2em;
-            
-    //         &.title {
-    //             font-size: 3em;
-    //             margin-top: 2.5%;
-    //         }
-    //     }
-    //     h2 {
-    //         font-size: 1.6em;
-    //     }
-    //     h3 {
-    //         font-size: 1.2em;
-    //     }
-    // }
 }

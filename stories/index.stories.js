@@ -2,20 +2,13 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-import CTextInput from '../src/components/CTextInput/CTextInput';
 import Popup from '../src/components/Popup/Popup';
-import CButton from '../src/components/CButton/CButton';
-import CText from '../src/components/CText/CText';
+import CButton from '../src/components/archive/CButton/CButton';
 import AdminListItem from '../src/components/AdminListItem/AdminListItem';
 import '../src/App.scss';
 import RoundButton from '../src/components/RoundButton/RoundButton';
 import AdminPage from "../src/pages/AdminPage/AdminPage";
 
-storiesOf('CTextInput', module)
-    // .addDecorator(CssBaseline)
-    .add('normal', () => (
-        <CTextInput value="alanpedro@btconnect.com" onChange={() => {}} />
-    ));
 
 storiesOf('Popup', module)
     // .addDecorator(CssBaseline)
@@ -36,14 +29,6 @@ storiesOf('Button', module)
     // .addDecorator(CssBaseline)
     .add('normal', () => (
         <CButton value="Save and Continue" />
-    ));
-
-storiesOf('CText', module)
-    // .addDecorator(CssBaseline)
-    .add('normal', () => (
-        <CText>
-            Follow this journey to create an account and register for Countdown
-        </CText>
     ));
 
 storiesOf('RoundButton', module)

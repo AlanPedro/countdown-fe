@@ -1,18 +1,18 @@
 import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
-import _ from 'lodash';
 import { Link } from 'react-router-dom';
 import Typography from "@material-ui/core/es/Typography/Typography";
 
-import { actions } from '../../ducks/standup/standup';
 import Button from "@material-ui/core/es/Button/Button";
 import Divider from "@material-ui/core/es/Divider/Divider";
+import {actions} from "../../ducks/availableStandups/availableStandups";
+import SimpleSpinner from "../../components/SimpleSpinner/SimpleSpinner";
 
 const HomePage = props => {
 
     useEffect(() => {
         props.getAllStandups()
-    }, props.availableStandups);
+    }, []);
 
     const {standups, pageName} = props;
     const getPage = standup => {
@@ -36,29 +36,44 @@ const HomePage = props => {
         </Link>
     );
 
-    if (_.isEmpty(standups)) return <h1>Loading...</h1>;
+    if (standups.length < 1) return <SimpleSpinner />;
 
+    if ( pageName === "admin" || pageName === "client") {
+        return (
+            <div style={{display: 'flex', justifyContent: 'center', height: '100vh', alignItems: 'center', flexDirection: 'column'}}>
+                {
+                    standups.map((standup, index) => (
+                        <React.Fragment key={index}>
+                            <Divider style={{ margin: "10px 0"}}/>
+                            {getPage(standup)}
+                        </React.Fragment>
+                    ))
+                }
+                { pageName === "admin" ?
+                    <React.Fragment>
+                        <Divider style={{ margin: "10px 0"}}/>
+                        <Link to={`/admin/create`}>
+                            <Button variant="outlined" color="primary">
+                                <Typography align="center" variant="h5">Create standup</Typography>
+                            </Button>
+                        </Link>
+                    </React.Fragment>
+                    : null
+                }
+            </div>
+        )
+    }
+
+    const standupName = props.match.params.name;
+    const standup = standups.find(s => s.name === standupName);
     return (
         <div style={{display: 'flex', justifyContent: 'center', height: '100vh', alignItems: 'center', flexDirection: 'column'}}>
-            {
-                standups.map((standup, index) => (
-                    <React.Fragment key={index}>
-                        <Divider style={{ margin: "10px 0"}}/>
-                        {getPage(standup)}
-                    </React.Fragment>
-                ))
-            }
-            { pageName === "admin" ?
                 <React.Fragment>
-                    <Divider style={{ margin: "10px 0"}}/>
-                    <Link to={`/admin/create`}>
-                        <Button variant="outlined" color="primary">
-                            <Typography align="center" variant="h5">Create standup</Typography>
-                        </Button>
-                    </Link>
+                    {renderLink(`/admin/${standup.name}/start`, standup.displayName, "run standup")}
+                    <Divider style={{ margin: "20px 0"}}/>
+                    {renderLink(`/admin/${standup.name}/edit`, standup.displayName, "edit standup")}
                 </React.Fragment>
-            : null
-            }
+
         </div>
     );
 };

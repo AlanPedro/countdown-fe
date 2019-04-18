@@ -1,15 +1,15 @@
 // standup.js
-import { call, put, take } from 'redux-saga/effects';
+import { call, put, takeLatest } from 'redux-saga/effects';
 
 import Api from '../../api/standup';
 
 // Types
-const GET_ALL = "duck/standup/GET_ALL";
+const GET_ALL = "duck/standup/GET_ALL_STANDUPS";
 const GET_ALL_SUCCESS = "duck/standup/GET_ALL_SUCCESS";
 const GET_ALL_FAILURE = "duck/standup/GET_ALL_FAILURE";
 
 // Reducer
-export default function reducer(state = {}, action) {
+export default function reducer(state = [], action) {
     switch(action.type) {
         case GET_ALL_SUCCESS:
             return action.payload.standups;
@@ -25,14 +25,17 @@ const getAllStandupsFailure = (standups) => ({ type: GET_ALL_FAILURE });
 
 // Sagas
 
-function* getAllStandupsSaga() {
-    yield take(types.GET_ALL);
+function* getAllStandupsSaga(action) {
     try {
         const allStandups = yield call(Api.getAllStandups);
         yield put(actions.getAllStandupsSuccess(allStandups))
     } catch (e) {
         yield put(actions.getAllStandupsFailure(e.message))
     }
+}
+
+function* getAllStandupsListener() {
+    yield takeLatest(GET_ALL, getAllStandupsSaga)
 }
 
 export const actions = {
@@ -48,5 +51,5 @@ export const types = {
 };
 
 export const availableStandupsSagas = [
-    getAllStandupsSaga()
+    getAllStandupsListener()
 ];

@@ -1,5 +1,5 @@
 import React from 'react';
-import CText from "../CText/CText";
+import CText from "../archive/CText/CText";
 import RandomAvatar from "../RandomAvatar/RandomAvatar";
 import DraggableCircles from "../DraggableCircles/DraggableCircles";
 
