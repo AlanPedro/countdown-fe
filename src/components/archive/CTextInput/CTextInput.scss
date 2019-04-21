@@ -1,0 +1,12 @@
+@import "../../../styles/variables";
+
+.c-text-input {
+    padding: 15px;
+    border-radius: 10px;
+    border-style: solid;
+    line-height: 1.5em;
+    font-size: 1.2em;
+    border-width: 1px;
+    border-color: $linear-grad-start;
+    box-sizing: border-box;
+}

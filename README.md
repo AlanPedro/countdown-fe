@@ -1,4 +1,26 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+# DD Standup Tool
+
+# Usage
+
+Url: http://localhost:3000 -> Home page <br>
+Url: http://localhost:3000/standups/:name -> Join standup <br>
+Url: http://localhost:3000/standups/:name/admin -> Admin standup
+
+## Deps
+- Material UI
+- Sagas
+- Redux
+- React
+- Reach router
+- React pose
+- Lodash
+- Axios
+- Sass
+- PropTypes
+
+- Storybook
+- gh-pages
 
 ## Available Scripts
 

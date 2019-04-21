@@ -12,5 +12,11 @@ $txt-secondary: black;
 
 $bg-primary: rbg(255, 255, 255);
 
-$linear-grad-start: rgb(79, 156, 248);
-$linear-grad-end: rgb(109, 222, 251);
+$color1: rgba(79, 156, 248, 1);
+$color2: rgba(109, 222, 251, 1);
+$color3: rgba(238, 99, 82, 1);
+$color4: rgba(89, 205, 144, 1);
+$color5: rgba(250, 192, 94, 1);
+
+$linear-grad-start: $color1;
+$linear-grad-end: $color2;

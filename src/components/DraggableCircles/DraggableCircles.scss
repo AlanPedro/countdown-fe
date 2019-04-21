@@ -1,0 +1,14 @@
+.draggable-circles {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-evenly;
+
+  span.circle {
+    height: 6px;
+    width: 6px;
+    background-color: #e0e0e0;
+    border-color: #e0e0e0;
+    border-width: 4px;
+  }
+}

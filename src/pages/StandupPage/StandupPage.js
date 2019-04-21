@@ -1,83 +1,82 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import Typography from "@material-ui/core/es/Typography/Typography";
+import Button from "@material-ui/core/es/Button/Button";
 
-import Sidebar from '../../components/Sidebar/Sidebar';
-import LoadingBar from '../../components/LoadingBar/LoadingBar';
-import Timer from '../../components/Timer/Timer';
 import "./StandupPage.scss";
 import { actions } from "../../ducks/standup/standup";
-import BackButton from '../../components/BackButton/BackButton';
+import Sidebar from '../../components/Sidebar/Sidebar';
+import LoadingBar from '../../components/LoadingBar/LoadingBar';
+import Popup from "../../components/Popup/Popup";
+import StandupCurrentSpeaker from "../../components/StandupCurrentSpeaker/StandupCurrentSpeaker";
+import SimpleSpinner from "../../components/SimpleSpinner/SimpleSpinner";
 
-class StandupPage extends React.Component {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      window: {
-        height: 0,
-        width: 0
-      }
-    }
-  }
+const StandupPage = props => {
 
-  componentDidMount = () => {
-    this.updateWindowDimensions();
-    this.props.joinStandup(this.props.match.params.name);
-    window.addEventListener('resize', this.updateWindowDimensions);
-    window.onpopstate = e => this.componentWillUnmount;
-  }
+    useEffect(() => {
+        props.joinStandup(props.match.params.name);
+        return () => {
+            props.leaveStandup(props.match.params.name);
+        }
+    }, []);
 
-  componentWillUnmount = () => {
-    this.props.leaveStandup(this.props.match.params.name)
-    window.removeEventListener('resize', this.updateWindowDimensions);
-  }
-
-  
-  updateWindowDimensions = () => this.setState({ window : { width: window.innerWidth, height: window.innerHeight }});
-  
-  renderTimer = time => time <= 10 ? <Timer time={time} /> : <React.Fragment />; 
-
-  render() {
-    const { standup } = this.props;
-    if (_.isEmpty(standup.teams)) return <div> Hi </div>;
+    const [joined, setJoined] = useState(false);
+    const { standup } = props;
+    if (!standup.teams) return <SimpleSpinner />;
     return (
-        <div className="standup-page">
-          <BackButton className="abs back-btn" to="/" />
-          <Sidebar teams={standup.teams} current={{team: standup.currentTeam, speaker: standup.currentSpeaker}} />
-          <div className="standup-page__main-view">
-              <LoadingBar allocation={standup.teams.find(team => team.name === standup.currentTeam).allocationInSeconds} timeLeft={standup.time} />
-              <h1 className="title">{standup.displayName}</h1>
-              <div className="speaker">
-                <h1>{standup.currentTeam}</h1>
-                <h2>{standup.currentSpeaker}</h2>
-                {this.renderTimer(standup.time)}
-              </div>
-          </div>
-          { !standup.live &&
-            <div className="standup-off-fg">
-              <div className="refresh-container">
-                  <h1>Standup is not live!</h1>
-                  <button value="Refresh Page" onClick={() => window.location.reload() }>Refresh page</button>
-              </div>
+        <React.Fragment>
+            <div className={`standup-page ${!joined ? "blurred" : ""}`}>
+                 <Sidebar teams={standup.teams} current={{team: standup.currentTeam, speaker: standup.currentSpeaker}} />
+                 <div className="standup-page__main-view">
+                     <LoadingBar
+                         allocation={standup.teams.find(team => team.name === standup.currentTeam).allocationInSeconds}
+                         timeLeft={standup.time}
+                         backgroundImage={"linear-gradient(to right, rgba(79, 156, 248, 1), rgba(109, 222, 251, 1))"}
+                     />
+                     <Typography variant="h3" className="title">{standup.displayName}</Typography>
+                     <StandupCurrentSpeaker
+                        speaker={standup.currentSpeaker}
+                        team={standup.currentTeam}
+                        time={standup.time}
+                        number={standup.teams.find(t => t.name === standup.currentTeam).randomNumber}
+                     />
+                 </div>
+                 { standup.paused &&
+                 <div style={{
+                     background: 'rgba(90,90,90,0.5)',
+                     position: 'absolute', zIndex: '100000', fontSize: '100px',
+                     width: "100%", height: "100%", display: 'flex',
+                     alignItems: 'center', justifyContent: 'center' }}>
+                     PAUSED
+                 </div>
+                 }
             </div>
-          }
-        </div>
+            <Popup show={!joined}>
+                <Typography variant="h4"> {standup.live ? "Standup is live!" : "Standup is not live!"} </Typography>
+                {standup.live ?
+                    <Button onClick={() => setJoined(true)} variant="contained" color="primary"> Click here to
+                        join </Button>
+                    :
+                    <Button onClick={() => window.location.reload()} variant="contained" color="primary"> Click here to
+                        refresh and check </Button>
+                }
+            </Popup>
+        </React.Fragment>
     )
-  }
-}
+};
 
 const mapStateToProps = (state) => (
     {
       standup: state.standup
     }
-)
+);
 
 const mapDispatchToProps = dispatch => (
   {
     joinStandup: (name) => dispatch(actions.joinStandup(name)),
-    leaveStandup: (name) => dispatch({type: "LEAVE_STANDUP"})
+    leaveStandup: (name) => dispatch(actions.leaveStandup(name))
   }
-)
+);
 
 export default connect(mapStateToProps, mapDispatchToProps)(StandupPage);

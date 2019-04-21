@@ -1,11 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const CText = ({children, weight}) => {
+import './CText.scss';
+
+const CText = ({children, weight, letterSpacing}) => {
     const w = weight !== undefined ? weight : " ";
     const classes = `countdown-text ` + w;
     return (
-        <span className={classes}>
+        <span
+            className={classes}
+            style={{ letterSpacing: `${letterSpacing}px`}}
+            >
             {children}
         </span>
     )

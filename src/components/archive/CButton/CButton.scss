@@ -1,0 +1,22 @@
+@import '../../../styles/variables';
+
+.c-button {
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+    color: white;
+    font-weight: $bold;
+    
+    &.primary {
+        background: linear-gradient(to right, $linear-grad-start, $linear-grad-start, $linear-grad-start, $linear-grad-end);
+    }
+
+    &.secondary {
+        
+    }
+
+    &:hover {
+        opacity: 0.8;
+    }
+}

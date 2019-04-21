@@ -1,14 +1,17 @@
+@import "../../styles/variables";
+
 .standup-page {
     display: grid;
     grid-template-areas: 
     "sidebar main"
     ;
     grid-template-columns: 25% 75%;
-    height: 100vh;
+    height: inherit;
     // overflow: hidden;
 
     .standup-page__side-bar {
         grid-area: sidebar;
+        height: inherit;
         background-color: #fafafa;
         padding-top: 50px;
         display: grid;
@@ -52,6 +55,7 @@
             .participant {
                 height: 70px;
                 display: grid;
+                box-sizing: content-box;
                 grid-template-areas: 
                     "photo text circles"
                 ;
@@ -96,18 +100,6 @@
 
                 .participant__circles {
                     grid-area: circles;
-                    display: flex;
-                    align-items: center;
-                    flex-direction: column;
-                    justify-content: space-evenly;
-
-                    span.circle {
-                        height: 6px;
-                        width: 6px;
-                        background-color: #e0e0e0;
-                        border-color: #e0e0e0;
-                        border-width: 4px;
-                    }
                 }
             }
         }
@@ -115,6 +107,7 @@
 
     .standup-page__main-view {
         grid-area: main;
+        height: inherit;
         background-color: white;
         box-shadow: -1px 0px 10px 0.5px #aaaaaa;
         display: grid;
@@ -122,10 +115,14 @@
             "loading"
             "title"
             "speaker"
-            "timer"
             ;
-        grid-template-rows: 50px 150px 2fr 1fr;
+        grid-template-rows: 40px 150px 1fr;
         grid-row-gap: 20px;
+        padding-bottom: 100px;
+
+        .main-view__loading-bar {
+            background-image: linear-gradient(to right, rgba(79, 156, 248, 1), rgba(109, 222, 251, 1));
+        }
 
         .abs-br {
             position: absolute;
@@ -138,17 +135,6 @@
             grid-area: title;
         }
 
-        .speaker {
-            grid-area: speaker;
-            background: white;
-            margin: 0 10vw;
-            border-radius: 20px;
-            box-shadow: -1px 0px 15px 5px #aaaaaa;
-            text-align: center;
-            padding: 15px;
-            display: grid;
-            grid-template-rows: 70px 70px 1fr;
-        }
     }
 
     .standup-off-fg {

@@ -4,21 +4,28 @@
   "private": true,
   "homepage": "https://alanpedro.github.io/countdown-fe/",
   "dependencies": {
+    "@material-ui/core": "^3.9.2",
+    "@material-ui/icons": "^3.0.2",
+    "avataaars": "^1.2.1",
     "axios": "^0.18.0",
+    "formik": "^1.5.2",
     "lodash": "^4.17.11",
     "node-sass": "^4.11.0",
     "prop-types": "^15.7.0",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
+    "react": "^16.8.5",
+    "react-dom": "^16.8.5",
     "react-pose": "^4.0.6",
     "react-redux": "^6.0.0",
     "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.3",
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
-    "redux-saga": "^1.0.2"
+    "redux-saga": "^1.0.2",
+    "styled-components": "^4.2.0",
+    "yup": "^0.27.0"
   },
   "scripts": {
+    "storybook": "start-storybook",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -36,6 +43,9 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "@storybook/react": "^5.0.3",
+    "babel-loader": "8.0.4",
     "gh-pages": "^2.0.1"
   }
 }
