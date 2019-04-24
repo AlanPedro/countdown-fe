@@ -24,7 +24,7 @@ interface IProps {
 const Sidebar: React.FunctionComponent<IProps> = props => {
     const { teams, current } = props;
     const today = new Date();
-    const currentTeamIndex = teams.findIndex(t => t.name === current.name);
+    const currentTeamIndex = teams.findIndex(t => t.name === current.name && t.speaker === current.speaker);
     return (
         <div className="standup-page__side-bar">
         <SidebarDate date={today} />

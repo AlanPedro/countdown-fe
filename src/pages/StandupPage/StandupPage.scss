@@ -136,10 +136,11 @@
             background-image: linear-gradient(to right, rgba(79, 156, 248, 1), rgba(109, 222, 251, 1));
         }
 
-        .abs-br {
+        .volume-icons {
             position: absolute;
-            bottom: 50px;
-            right: 70px;
+            bottom: -10px;
+            right: 50px;
+            font-size: 100px;
         }
 
         .title {

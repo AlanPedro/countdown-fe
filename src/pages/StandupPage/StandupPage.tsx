@@ -6,6 +6,8 @@ import { RouteComponentProps } from 'react-router';
 
 import Typography from "@material-ui/core/es/Typography/Typography";
 import Button from "@material-ui/core/es/Button/Button";
+import VolumeOff from "@material-ui/icons/VolumeOff";
+import VolumeUp from "@material-ui/icons/VolumeUp";
 
 import "./StandupPage.scss";
 import { TeamWithRandomNumber } from '../../../@types/countdown';
@@ -16,6 +18,7 @@ import LoadingBar from '../../components/LoadingBar/LoadingBar';
 import Popup from "../../components/Popup/Popup";
 import StandupCurrentSpeaker from "../../components/StandupCurrentSpeaker/StandupCurrentSpeaker";
 import SimpleSpinner from "../../components/SimpleSpinner/SimpleSpinner";
+
 const CountdownMP3 = require("../../assets/countdown.mp3");
 
 interface PropsFromState {
@@ -43,10 +46,13 @@ const StandupPage: React.FunctionComponent<IProps & PropsFromState & PropsFromDi
         }
     }, []);
 
+    const [audio, setAudio] = useState(false);
     const [joined, setJoined] = useState(false);
     const { standup } = props;
     if (standup.teams.length < 1) return <SimpleSpinner />;
-    const currentTeam: TeamWithRandomNumber = standup.teams.find(team => team.name === standup.currentTeam)!;
+    const currentTeam: TeamWithRandomNumber = standup.teams.find(team => 
+        team.name === standup.currentTeam && team.speaker === standup.currentSpeaker
+    )!;
     return (
         <React.Fragment>
             <div className={`standup-page ${!joined ? "blurred" : ""}`}>
@@ -59,11 +65,19 @@ const StandupPage: React.FunctionComponent<IProps & PropsFromState & PropsFromDi
                      />
                      <Typography variant="h3" className="title">{standup.displayName}</Typography>
                      <StandupCurrentSpeaker
-                        speaker={standup.currentSpeaker}
-                        team={standup.currentTeam}
+                        speaker={currentTeam.speaker}
+                        team={currentTeam.name}
                         time={standup.time}
                         number={currentTeam.randomNumber}
                      />
+                     <div className="volume-icons" onClick={() => setAudio(!audio)}>
+                        {
+                            audio ?
+                            <VolumeUp fontSize="inherit" /> 
+                            : 
+                            <VolumeOff fontSize="inherit" />
+                        }
+                     </div>
                  </div>
                  { standup.paused && standup.live &&
                  <div className="paused-cover">
@@ -71,7 +85,7 @@ const StandupPage: React.FunctionComponent<IProps & PropsFromState & PropsFromDi
                  </div>
                  }
                  {
-                    standup.time <= 9 && !standup.paused &&
+                    standup.time <= 9 && !standup.paused && audio &&
                     <audio src={CountdownMP3} autoPlay />
                  }
             </div>
