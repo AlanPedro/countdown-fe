@@ -9,6 +9,8 @@ import Button from "@material-ui/core/es/Button/Button";
 import VolumeOff from "@material-ui/icons/VolumeOff";
 import VolumeUp from "@material-ui/icons/VolumeUp";
 
+import Fireworks from "../../components/Fireworks/Fireworks";
+
 import "./StandupPage.scss";
 import { TeamWithRandomNumber } from '../../../@types/countdown';
 import { ApplicationState } from '../../ducks';
@@ -70,6 +72,26 @@ const StandupPage: React.FunctionComponent<IProps & PropsFromState & PropsFromDi
                         time={standup.time}
                         number={currentTeam.randomNumber}
                      />
+                     {
+                        currentTeam.speaker === "Shiv" ?
+                        <div style={{ position: "absolute"}}>
+                            <div style={{ position: "absolute", display: "flex",
+                              alignItems:"center", justifyContent: "center", height: "95vh", width: "75vw"
+                              }}>
+                                <Typography variant="h1">EV2 is LIVE!!!</Typography>
+                            </div>
+                        <Fireworks 
+                            style={{ position: "absolute" }}
+                            width={window.innerWidth * (3/4)} 
+                            height={window.innerHeight - 75} 
+                            background="rgba(0, 0, 0, 0.5)" 
+                            maxFireworks={50}
+                            maxSparks={10} /> 
+                        </div>
+                        : 
+                        null
+                     }
+                     
                      <div className="volume-icons" onClick={() => setAudio(!audio)}>
                         {
                             audio ?
