@@ -1,10 +1,11 @@
-import {call, cancel, cancelled, fork, put, take, takeLatest} from 'redux-saga/effects';
+import {call, cancel, cancelled, fork, put, take, takeLatest, select} from 'redux-saga/effects';
 import {eventChannel} from 'redux-saga';
 
 import Api from '../../api/standup';
 import {WS_SERVER_URL} from '../../config/constants';
 import {actions} from './standup';
 import {StandupActionTypes as types} from './types';
+import { ApplicationState } from '..';
 
 const url = WS_SERVER_URL;
 
@@ -43,7 +44,8 @@ function* joinStandupWrapper(action: any) {
 function* adminTest(action: any) {
 
     // Do these in parallel
-    const standup = yield call(getStandup, action.payload);
+    const standup = yield select(getTeamToInitiateStandup);
+    yield put(actions.initialiseStandup(standup))
     const isLive = yield call(Api.isStandupLive, action.payload);
 
     if (standup && isLive) {
@@ -72,11 +74,17 @@ function* startAdminStandupWrapper(action: any) {
 
 function* joinStandupAsAdmin(name: string, message: string) {
     try {
-        const socket = yield call(connect, wsAdminUrl(name));
-        const channel = yield call(createWebSocketChannel, socket);
-        socket.send("connect");
-        socket.send(message);
-        yield fork(standupRead, channel);
+        const standup = yield select(getTeamToInitiateStandup);
+
+        if (standup) {
+            yield put(actions.initialiseStandup(standup))
+            const socket = yield call(connect, wsAdminUrl(name));
+            const channel = yield call(createWebSocketChannel, socket);
+            socket.send("connect");
+            socket.send(message);
+            yield fork(standupRead, channel);
+        }
+
     } finally {
         if (yield cancelled()) {
             console.log("LEFT STANDUP")
@@ -84,12 +92,15 @@ function* joinStandupAsAdmin(name: string, message: string) {
     }
 }
 
-// Joining a standup
+export const getTeamToInitiateStandup = (state: ApplicationState) => state.team;
+
+// Join standup with stuff from store
 function* joinStandup(name: string) {
     try {
-        const standup = yield call(getStandup, name);
-
+        const standup = yield select(getTeamToInitiateStandup);
+        
         if (standup) {
+            yield put(actions.initialiseStandup(standup))
             const socket = yield call(connect, wsClientUrl(name));
             const channel = yield call(createWebSocketChannel, socket);
             yield fork(standupRead, channel);
@@ -98,20 +109,6 @@ function* joinStandup(name: string) {
         if (yield cancelled()) {
             console.log("LEFT STANDUP")
         }
-    }
-}
-
-function* getStandupWrapper(action: any) {
-    const standup = yield call(getStandup, action.payload);
-}
-
-function* getStandup(name: string) {
-    try {
-        const standup = yield call(Api.getStandupByName, name);
-        yield put(actions.initialiseStandup(standup))
-        return standup
-    } catch (e) {
-        yield put(actions.errorInitialisingStandup(name, e.message))
     }
 }
 
@@ -153,46 +150,16 @@ function* joinStandupListener() {
     yield takeLatest(types.JOIN, joinStandupWrapper);
 }
 
-function* getStandupListener() {
-    yield takeLatest(types.GET_BY_NAME, getStandupWrapper);
-}
 
 function* startStandupListener() {
     yield takeLatest(types.LOAD, adminTest);
 }
 
-function* editStandup(action: any) {
-    try {
-        yield call(Api.editStandup, action.payload.standup);
-        yield call(action.payload.onSuccess)
-    } catch (e) {
-        yield call(action.payload.onError, e.code)
-    }
-}
 
-function* createStandup(action: any) {
-    try {
-        yield call(Api.createStandup, action.payload.standup);
-        yield call(action.payload.onSuccess)
-    } catch (e) {
-        yield call(action.payload.onError, e.code)
-    }
-}
-
-function* editStandupListener() {
-    yield takeLatest(types.EDIT, editStandup)
-}
-
-function* createStandupListener() {
-    yield takeLatest(types.CREATE, createStandup)
-}
 
 const combinedSagas = [
     startStandupListener(),
     joinStandupListener(),
-    getStandupListener(),
-    editStandupListener(),
-    createStandupListener(),
     pauseStandup(),
     nextSpeaker(),
     unpauseStandup(),

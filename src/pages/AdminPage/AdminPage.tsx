@@ -15,16 +15,19 @@ import AuthenticationPopup from "../../components/AuthenticationPopup/Authentica
 import AdminControls from "../../components/AdminControls/AdminControls";
 import SimpleSpinner from "../../components/SimpleSpinner/SimpleSpinner";
 import { ApplicationState } from '../../ducks';
+import {TeamState, actions as teamActions} from "../../ducks/team";
 
 interface RouterProps {
-    name: string;
+    projectName: string;
+    teamName: string;
 }
 interface IProps extends RouteComponentProps<RouterProps>{
     location: H.Location;
     history: H.History;
 }
 interface PropsFromState {
-    standup: StandupState
+    standup: StandupState;
+    team: TeamState;
 }
 interface PropsFromDispatch {
     startStandup: () => void,
@@ -32,31 +35,35 @@ interface PropsFromDispatch {
     pauseStandup: () => void,
     nextSpeaker: () => void,
     unpauseStandup: () => void,
-    leaveStandup: (name: string) => void
+    leaveStandup: (name: string) => void,
+    getTeamByName: (name: string) => void
 }
 
 const AdminPage: React.FunctionComponent<IProps & PropsFromState & PropsFromDispatch> = props => {
 
     useEffect(() => {
-        props.loadStandup(props.match.params.name);
+        const {teamName} = props.match.params;
+        if (team.members.length < 1) props.getTeamByName(teamName)
+        else props.loadStandup(teamName);
         return () => {
-            props.leaveStandup(props.match.params.name);
+            props.leaveStandup(teamName);
         }
-    }, []);
+    }, [props.team]);
 
     const [authenticated, setAuthenticated] = useState(true);
 
     const start = () => {
-        if (props.standup.live) props.unpauseStandup() 
+        if (props.standup.live) props.unpauseStandup() ;
         else props.startStandup();
-    }
+    };
     const pause = () => props.pauseStandup();
     const next = () => props.nextSpeaker();
 
-    const { standup } = props;
-    if (standup.teams.length < 1) return <SimpleSpinner />;
-    const { teams, currentTeam, currentSpeaker, time } = standup;
-    const teamsToCome = teams.slice(teams.findIndex(team => currentTeam === team.name) + 1);
+    const { team, standup } = props;
+    if (team.members.length < 1 || standup.currentTeam === "") return <SimpleSpinner />;
+    const { members } = team;
+    const { currentTeam, currentSpeaker, time } = standup;
+    const teamsToCome = members.slice(members.findIndex(member => currentTeam === member.name) + 1);
 
     return (
         <React.Fragment>
@@ -88,7 +95,7 @@ const AdminPage: React.FunctionComponent<IProps & PropsFromState & PropsFromDisp
                     </div>
                     <div className="admin-page__bottom-bar">
                         <LoadingBar
-                            allocation={standup.teams.find(team => team.name === standup.currentTeam)!.allocationInSeconds}
+                            allocation={team.members.find(member => member.name === standup.currentTeam)!.allocationInSeconds}
                             timeLeft={standup.time}
                         />
                         <AdminControls
@@ -112,7 +119,8 @@ const PosedTeam = posed.div({
 
 const mapStateToProps = (state: ApplicationState) => (
     {
-      standup: state.standup
+      standup: state.standup,
+      team: state.team
     }
 );
 
@@ -123,7 +131,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => (
     pauseStandup: () => dispatch(actions.pauseStandup()),
     nextSpeaker: () => dispatch(actions.toNextSpeaker()),
     unpauseStandup: () => dispatch(actions.unpauseStandup()),
-    leaveStandup: (name: string) => dispatch(actions.leaveStandup(name))
+    leaveStandup: (name: string) => dispatch(actions.leaveStandup(name)),
+    getTeamByName: (name: string) => dispatch(teamActions.getTeamByName(name))
   }
 );
 
