@@ -14,10 +14,8 @@ Url: http://localhost:3000/standups/:name/admin -> Admin standup
 - React
 - Reach router
 - React pose
-- Lodash
 - Axios
 - Sass
-- PropTypes
 
 - Storybook
 - gh-pages

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import './PlayPauseButtons.scss';
 import PlayButton from '../PlayButton/PlayButton';
@@ -23,13 +22,6 @@ const PlayPauseButtons = ({className, paused, onPressPlay, onPressPause}) => {
             <PlayButton onClick={pressedPlay} active={!paused} />
         </div>
     )
-}
-
-PlayPauseButtons.propTypes = {
-    paused: PropTypes.bool,
-    className: PropTypes.string,
-    onPressPause: PropTypes.func,
-    onPressPlay: PropTypes.func
 }
 
 PlayPauseButtons.defaultProps = {

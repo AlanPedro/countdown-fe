@@ -1,6 +1,5 @@
 // standup.js
-import _ from 'lodash';
-import { createStandardAction, ActionType, createAsyncAction } from 'typesafe-actions';
+import { createStandardAction, ActionType } from 'typesafe-actions';
 import { StandupActionTypes as types, StandupState } from './types';
 import { Standup, Team, StandupUpdate, SuccessErrorCallback } from '../../../@types/countdown';
 
@@ -52,7 +51,10 @@ export default function reducer(state = initialState, action: StandupActions) {
             console.log("Error getting standup");
             return state;
         case types.LEAVE:
-            return _.merge(state, { live: false });
+            return {
+                ...state,
+                live: false
+            };
         default:
             return state;
     }

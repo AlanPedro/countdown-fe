@@ -1,11 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import './CText.scss';
 
 const CText = ({children, weight, letterSpacing}) => {
-    const w = weight !== undefined ? weight : " ";
-    const classes = `countdown-text ` + w;
+    const classes = `countdown-text ` + weight;
     return (
         <span
             className={classes}
@@ -16,10 +14,8 @@ const CText = ({children, weight, letterSpacing}) => {
     )
 };
 
-// Update to validate types of weight: Bold, Light, Normal, Semibold
-CText.propTypes = {
-    children: PropTypes.string,
-    weight: PropTypes.string
-}
+CText.defaultProps = {
+    weight: " "
+};
 
 export default CText;

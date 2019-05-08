@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { ICON_OFFSET_X } from '../../config/constants';
 
@@ -19,18 +18,18 @@ const MainCarousel = (props) => {
     );
 }
 
-MainCarousel.propTypes = {
-  slideIndex: PropTypes.number.isRequired,
-  window: PropTypes.shape({
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired
-  }),
-  children: PropTypes.arrayOf(
-    PropTypes.oneOfType([
-      PropTypes.func,
-      PropTypes.node
-    ]).isRequired
-  ).isRequired
-}
+// MainCarousel.propTypes = {
+//   slideIndex: PropTypes.number.isRequired,
+//   window: PropTypes.shape({
+//     width: PropTypes.number.isRequired,
+//     height: PropTypes.number.isRequired
+//   }),
+//   children: PropTypes.arrayOf(
+//     PropTypes.oneOfType([
+//       PropTypes.func,
+//       PropTypes.node
+//     ]).isRequired
+//   ).isRequired
+// }
 
 export default MainCarousel;

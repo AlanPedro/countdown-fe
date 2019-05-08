@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import "./PlayButton.scss";
 import arrow from "../../assets/arrow.svg";
@@ -12,11 +11,6 @@ const PlayButton = (props) => {
             <img src={arrow} height="35" alt="Play Icon" />
         </RoundButton>
     )
-}
-
-PlayButton.propTypes = {
-    className: PropTypes.string,
-    paused: PropTypes.bool
 }
 
 export default PlayButton;

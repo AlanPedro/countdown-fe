@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import './CTextInput.scss';
 
@@ -12,12 +11,5 @@ const CTextInput = props => (
         value={props.value}
         />
 );
-
-CTextInput.propTypes = {
-    onChange: PropTypes.func.isRequired,
-    value: PropTypes.string.isRequired,
-    placeholder: PropTypes.string,
-    type: PropTypes.string
-}
 
 export default CTextInput;
