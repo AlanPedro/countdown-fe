@@ -6,7 +6,7 @@ import Button from "@material-ui/core/es/Button";
 import FieldArrayInput from "../FieldArrayInput/FieldArrayInput";
 import ArrowDropDownRounded from "@material-ui/icons/ArrowDropDownRounded";
 import ArrowDropUpRounded from "@material-ui/icons/ArrowDropUpRounded";
-import {Team} from "../../../@types/countdown";
+import {TeamMember} from "../../../@types/countdown";
 
 const StyledEditableTeam = styled.div`
     display: flex;
@@ -43,7 +43,7 @@ const StyledArrows = styled.div`
 `;
 
 interface EditableTeamProps {
-    team: Team;
+    team: TeamMember;
     index: number;
     onDelete: () => void;
     onMoveUp: () => void;

@@ -10,11 +10,10 @@ import BottomNavigation from "@material-ui/core/es/BottomNavigation/BottomNaviga
 import BottomNavigationAction from "@material-ui/core/es/BottomNavigationAction/BottomNavigationAction";
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import MeetingRoomRounded from '@material-ui/icons/MeetingRoomRounded';
-import PermIdentityRounded from '@material-ui/icons/PermIdentityRounded';
 import HomeRounded from '@material-ui/icons/HomeRounded';
 
 import './Navbars.scss';
-import {StandupNames} from "../../../@types/countdown";
+import {TeamNames} from "../../../@types/countdown";
 import { ApplicationState } from '../../ducks';
 
 interface RouterProps {
@@ -22,7 +21,7 @@ interface RouterProps {
 }
 
 interface PropsFromStore {
-    readonly allStandups: StandupNames[]
+    readonly teams: TeamNames[]
 }
 
 interface NavbarsProps extends RouteComponentProps<RouterProps> {
@@ -31,12 +30,12 @@ interface NavbarsProps extends RouteComponentProps<RouterProps> {
     children?: React.ReactNode;
 }
 
-const Navbars: React.FunctionComponent<NavbarsProps & PropsFromStore> = ({location, history, allStandups, children}) => {
+const Navbars: React.FunctionComponent<NavbarsProps & PropsFromStore> = ({location, history, teams, children}) => {
 
     React.useEffect(() => {
-        if (location.pathname.includes('admin')) setValue(2);
-        else if (location.pathname.includes('standups')) setValue(0);
-        else if (location.pathname === '/') setValue(1);
+        // if (location.pathname.includes('admin')) setValue(2);
+        if (location.pathname.includes('project')) setValue(1);
+        else if (location.pathname === '/') setValue(0);
     }, [location.pathname]);
 
     const [value, setValue] = React.useState(0);
@@ -44,14 +43,14 @@ const Navbars: React.FunctionComponent<NavbarsProps & PropsFromStore> = ({locati
     // TODO: Clean this up and find better way to get title
     const getTitleFromUrl = (url: string) => {
         try {
-            if (url === "/standups") {
-                return "Standups Homepage"
-            } else if (url.includes("/standups/")) {
+            if (url === "/project") {
+                return "Projects"
+            } else if (url.includes("/project/")) {
                 const regex = url.includes("admin") ? /(?<=standups\/)[\w]*(?=\/admin)/ : /(?<=standups\/)[\w]*/;
                 const name = url.match(regex)![0];
-                return allStandups.find(s => name === s.name)!.displayName;
-            } else if (url === "/admin") {
-                return "Admin Homepage"
+                return teams.find(s => name === s.name)!.displayName;
+            // } else if (url === "/admin") {
+                // return "Admin Homepage"
             } else {
                 return "Countdown";
             }
@@ -62,11 +61,11 @@ const Navbars: React.FunctionComponent<NavbarsProps & PropsFromStore> = ({locati
 
     const handleChange = (e: any, v: number) => {
         if (v === 0)
-            history.push('/standups');
-        else if (v === 1)
             history.push('/');
-        else if (v === 2)
-            history.push('/admin');
+        else if (v === 1)
+            history.push('/project');
+        // else if (v === 2)
+            // history.push('/admin');
         setValue(v);
     };
 
@@ -100,9 +99,9 @@ const Navbars: React.FunctionComponent<NavbarsProps & PropsFromStore> = ({locati
                 showLabels
                 className="bottom-nav"
             >
-                <BottomNavigationAction label="Standups" icon={<MeetingRoomRounded />} />
                 <BottomNavigationAction label="Home" icon={<HomeRounded />} />
-                <BottomNavigationAction label="Admin" icon={<PermIdentityRounded />} />
+                <BottomNavigationAction label="Projects" icon={<MeetingRoomRounded />} />
+                {/* <BottomNavigationAction label="Admin" icon={<PermIdentityRounded />} /> */}
             </BottomNavigation>
         </React.Fragment>
     )
@@ -110,7 +109,7 @@ const Navbars: React.FunctionComponent<NavbarsProps & PropsFromStore> = ({locati
 
 function mapStateToProps(state: ApplicationState): PropsFromStore {
     return {
-        allStandups: state.allStandups
+        teams: state.teams
     }
 }
 

@@ -22,28 +22,36 @@ export as namespace countdown;
 /*~ You can declare types that are available via importing the module */
 
 // TODO: Remove the standupwithRandomnumber types once avatar creation sorted
-export type Standup = {
-    id: number;
-    name: string;
-    displayName: string;
-    teams: Team[];
-}
-
-export type StandupWithRandomNumber = {
-    id: number;
-    name: string;
-    displayName: string;
-    teams: TeamWithRandomNumber[];
-}
-
 export type Team = {
+    id: number;
+    name: string;
+    displayName: string;
+    members: TeamMember[];
+}
+
+//TODO: Deprecate
+export type TeamDto = {
+    id: number;
+    name: string;
+    displayName: string;
+    teams: TeamMember[];
+}
+
+export type TeamWithRandomNumber = {
+    id: number;
+    name: string;
+    displayName: string;
+    members: TeamMemberWithRandomNumber[];
+}
+
+export type TeamMember = {
     id: number;
     name: string;
     speaker: string;
     allocationInSeconds: number;
 }
 
-export type TeamWithRandomNumber = {
+export type TeamMemberWithRandomNumber = {
     id: number;
     name: string;
     speaker: string;
@@ -51,7 +59,7 @@ export type TeamWithRandomNumber = {
     randomNumber: number;
 }
 
-export type StandupNames = {
+export type TeamNames = {
     name: string;
     displayName: string;
 }
@@ -65,6 +73,16 @@ export type StandupUpdate = {
 export type SuccessErrorCallback = {
     onSuccess: () => void;
     onError: (errorCode: number) => void;
+}
+
+export type Project = {
+    name: string;
+    teams: TeamNames[];
+}
+
+export type ProjectNames = {
+    name: string;
+    displayName: string;
 }
 
 /*~ You can declare properties of the module using const, let, or var */

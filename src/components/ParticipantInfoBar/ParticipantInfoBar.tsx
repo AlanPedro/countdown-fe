@@ -2,10 +2,10 @@ import * as React from 'react';
 import CText from "../archive/CText/CText";
 import RandomAvatar from "../RandomAvatar/RandomAvatar";
 import DraggableCircles from "../DraggableCircles/DraggableCircles";
-import { TeamWithRandomNumber } from '../../../@types/countdown';
+import { TeamMemberWithRandomNumber } from '../../../@types/countdown';
 
 interface IProps {
-    team: TeamWithRandomNumber;
+    team: TeamMemberWithRandomNumber;
     active: boolean;
 }
 

@@ -6,11 +6,11 @@ import { RouteComponentProps } from 'react-router-dom';
 import { Dispatch } from 'redux';
 import Typography from "@material-ui/core/es/Typography/Typography";
 
-import {actions} from "../../ducks/standup";
-import StandupForm from "../../components/StandupForm/StandupForm";
+import {actions} from "../../ducks/team";
+import TeamForm from "../../components/TeamForm/TeamForm";
 import {NO_ERRORS} from "../../config/constants";
 import SimpleSpinner from "../../components/SimpleSpinner/SimpleSpinner";
-import { StandupWithRandomNumber, Standup, SuccessErrorCallback, TeamWithRandomNumber } from '../../../@types/countdown';
+import { TeamWithRandomNumber, Team, SuccessErrorCallback, TeamMemberWithRandomNumber, TeamDto } from '../../../@types/countdown';
 import { ApplicationState } from '../../ducks';
 
 const StyledEditPage = styled.div`
@@ -24,23 +24,24 @@ const StyledEditPage = styled.div`
 `;
 
 interface RouterProps {
-    name: string;
+    teamName: string;
+    projectName: string;
 }
 interface IProps extends RouteComponentProps<RouterProps> {
     history: H.History;
 }
 interface PropsFromState {
-    standup: StandupWithRandomNumber
+    team: TeamWithRandomNumber
 }
 interface PropsFromDispatch {
-    getStandup: (name: string) => void;
-    editStandup: (standup: Standup, meta: SuccessErrorCallback) => void;
+    getTeam: (name: string) => void;
+    editTeam: (team: TeamDto, meta: SuccessErrorCallback) => void;
 }
 
-const EditPage: React.FunctionComponent<IProps & PropsFromState & PropsFromDispatch> = ({standup, getStandup, match, editStandup, history}) => {
+const EditPage: React.FunctionComponent<IProps & PropsFromState & PropsFromDispatch> = ({team, getTeam, match, editTeam, history}) => {
 
     useEffect(() => {
-        getStandup(match.params.name)
+        getTeam(match.params.teamName)
     }, []);
 
     const [submitting, setSubmitting] = useState(false);
@@ -48,19 +49,19 @@ const EditPage: React.FunctionComponent<IProps & PropsFromState & PropsFromDispa
 
     const getInitialValues = () => {
         return {
-            displayName: standup.displayName,
-            url: standup.name,
-            teams: standup.teams
+            displayName: team.displayName,
+            url: team.name,
+            teams: team.members
         }
     };
 
-    const saveStandup = (editedStandup: any) => {
+    const saveTeam = (editedTeam: any) => {
         setSubmitting(true);
-        const newStandup = {
-            id: standup.id,
-            name: standup.name,
-            displayName: editedStandup.displayName,
-            teams: editedStandup.teams.map((t: TeamWithRandomNumber) => ({
+        const newTeam: TeamDto = {
+            id: team.id,
+            name: team.name,
+            displayName: editedTeam.displayName,
+            teams: editedTeam.teams.map((t: TeamMemberWithRandomNumber) => ({
                 id: t.id, name: t.name,
                 speaker: t.speaker, allocationInSeconds: t.allocationInSeconds
             }))
@@ -68,22 +69,22 @@ const EditPage: React.FunctionComponent<IProps & PropsFromState & PropsFromDispa
         const onSuccess = () => {
             setSubmitting(false);
             setErrors(NO_ERRORS);
-            history.push('/admin/' + match.params.name)
+            history.push('/admin/' + match.params.teamName)
         };
         const onError = (errorCode: number) => {
             setSubmitting(false);
             setErrors(errorCode)
         };
-        editStandup(newStandup, { onSuccess, onError })
+        editTeam(newTeam, { onSuccess, onError })
     };
 
     const getErrors = (code: number) => {
-        if (code === 422) return "Error parsing standup, ensure all names and speakers are alphanumeric characters and allocation in seconds is a number";
-        else if (code === 404) return "Error finding standup to edit in the database";
+        if (code === 422) return "Error parsing team, ensure all names and speakers are alphanumeric characters and allocation in seconds is a number";
+        else if (code === 404) return "Error finding team to edit in the database";
         else return "Unknown error. Contact Alan Hutcheson on Slack for help";
     };
 
-    if (!standup.teams || standup.name !== match.params.name)
+    if (!team.members || team.name !== match.params.teamName)
         return <SimpleSpinner size="100px"/>;
 
     return (
@@ -96,9 +97,9 @@ const EditPage: React.FunctionComponent<IProps & PropsFromState & PropsFromDispa
                     {getErrors(errors)}
                 </Typography>
             }
-            <StandupForm
+            <TeamForm
                 initialValues={getInitialValues()}
-                onSubmit={(s: Standup) => saveStandup(s)}
+                onSubmit={(s: Team) => saveTeam(s)}
                 submitting={submitting}
                 isCreating={false}
             />
@@ -108,14 +109,14 @@ const EditPage: React.FunctionComponent<IProps & PropsFromState & PropsFromDispa
 
 const mapStateToProps = (state: ApplicationState) => (
     {
-        standup: state.standup
+        team: state.team
     }
 );
 
 const mapDispatchToProps = (dispatch: Dispatch) => (
     {
-        getStandup: (name: string) => dispatch(actions.getStandupByName(name)),
-        editStandup: (s: Standup, meta: SuccessErrorCallback) => dispatch(actions.editStandup(s, meta)),
+        getTeam: (name: string) => dispatch(actions.getTeamByName(name)),
+        editTeam: (t: TeamDto, meta: SuccessErrorCallback) => dispatch(actions.editTeam(t, meta)),
     }
 );
 

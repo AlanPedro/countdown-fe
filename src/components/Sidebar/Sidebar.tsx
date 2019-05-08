@@ -3,7 +3,7 @@ import posed from 'react-pose';
 
 import ParticipantInfoBar from "../ParticipantInfoBar/ParticipantInfoBar";
 import SidebarDate from "../SidebarDate/SidebarDate";
-import { TeamWithRandomNumber } from '../../../@types/countdown';
+import { TeamMemberWithRandomNumber } from '../../../@types/countdown';
 
 interface IPoseProps {
   offset: number;
@@ -17,8 +17,8 @@ const PosedParticipantsWrapper = posed.div({
 });
 
 interface IProps {
-  teams: TeamWithRandomNumber[];
-  current: TeamWithRandomNumber;
+  teams: TeamMemberWithRandomNumber[];
+  current: TeamMemberWithRandomNumber;
 }
 
 const Sidebar: React.FunctionComponent<IProps> = props => {

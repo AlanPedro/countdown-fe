@@ -1,18 +1,18 @@
 import axios from 'axios';
 import { API_SERVER_URL } from '../config/constants';
 import CountdownError from "../utils/errors/CountdownError";
-import { Standup } from '../../@types/countdown';
+import { Team, TeamDto } from '../../@types/countdown';
 
 const baseUrl = API_SERVER_URL;
 const standupUrl = (slug: string = "") => baseUrl + "/standups" + slug + "?timestamp=" + new Date().toLocaleTimeString();
 
-const getStandupByName = (name: string) => (
+const getTeamByName = (name: string) => (
     axios.get(standupUrl(`/${name}`))
     .then(res => res.data)
-    .catch(err => {throw new Error("Unable to retrieve standup")})
+    .catch(err => {throw new Error("Unable to retrieve team")})
 );
 
-const getAllStandups = () => (
+const getAllTeams = () => (
     axios.get(standupUrl())
     .then(res => res.data)
     .catch(err => console.log(err))
@@ -24,16 +24,16 @@ const isStandupLive = (name: string) => (
         .catch(err => false)
 );
 
-const editStandup = (standup: Standup) => (
-    axios.put(standupUrl(), standup)
+const editTeam = (team: TeamDto) => (
+    axios.put(standupUrl(), team)
         .then(res => res.status === 200)
         .catch(err => {
             throw new CountdownError(err.response.status, err.response.data)
         })
 );
 
-const createStandup = (standup: Standup) => (
-    axios.post(standupUrl(), standup)
+const createTeam = (team: TeamDto) => (
+    axios.post(standupUrl(), team)
         .then(res => res.status === 201)
         .catch(err => {
             throw new CountdownError(err.response.status, err.response.data)
@@ -41,9 +41,9 @@ const createStandup = (standup: Standup) => (
 );
 
 export default {
-    getStandupByName,
-    getAllStandups,
+    getTeamByName,
+    getAllTeams,
     isStandupLive,
-    editStandup,
-    createStandup
+    editTeam,
+    createTeam
 }

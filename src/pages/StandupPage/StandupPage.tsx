@@ -10,26 +10,31 @@ import VolumeOff from "@material-ui/icons/VolumeOff";
 import VolumeUp from "@material-ui/icons/VolumeUp";
 
 import "./StandupPage.scss";
-import { TeamWithRandomNumber } from '../../../@types/countdown';
+import { TeamMemberWithRandomNumber } from '../../../@types/countdown';
 import { ApplicationState } from '../../ducks';
 import { actions, StandupState } from "../../ducks/standup";
+import { actions as teamActions } from "../../ducks/team";
 import Sidebar from '../../components/Sidebar/Sidebar';
 import LoadingBar from '../../components/LoadingBar/LoadingBar';
 import Popup from "../../components/Popup/Popup";
 import StandupCurrentSpeaker from "../../components/StandupCurrentSpeaker/StandupCurrentSpeaker";
 import SimpleSpinner from "../../components/SimpleSpinner/SimpleSpinner";
+import {TeamState} from "../../ducks/team";
 
 const CountdownMP3 = require("../../assets/countdown.mp3");
 
 interface PropsFromState {
     standup: StandupState;
+    team: TeamState;
 }
 interface PropsFromDispatch {
     joinStandup: (name: string) => void;
     leaveStandup: (name: string) => void;
+    getTeamByName: (name: string) => void;
 }
 interface RouterProps {
-    name: string;
+    projectName: string;
+    teamName: string;
 }
 
 interface IProps extends RouteComponentProps<RouterProps> {
@@ -40,30 +45,32 @@ interface IProps extends RouteComponentProps<RouterProps> {
 const StandupPage: React.FunctionComponent<IProps & PropsFromState & PropsFromDispatch> = props => {
 
     useEffect(() => {
-        props.joinStandup(props.match.params.name);
+        const {teamName} = props.match.params;
+        if (team.members.length < 1) props.getTeamByName(teamName)
+        else props.joinStandup(teamName);
         return () => {
-            props.leaveStandup(props.match.params.name);
+            props.leaveStandup(teamName);
         }
-    }, []);
+    }, [props.team]);
 
     const [audio, setAudio] = useState(false);
     const [joined, setJoined] = useState(false);
-    const { standup } = props;
-    if (standup.teams.length < 1) return <SimpleSpinner />;
-    const currentTeam: TeamWithRandomNumber = standup.teams.find(team => 
-        team.name === standup.currentTeam && team.speaker === standup.currentSpeaker
+    const { standup, team } = props;
+    if (team.members.length < 1 || standup.currentTeam === "") return <SimpleSpinner />;
+    const currentTeam: TeamMemberWithRandomNumber = team.members.find(member =>
+        member.name === standup.currentTeam && member.speaker === standup.currentSpeaker
     )!;
     return (
         <React.Fragment>
             <div className={`standup-page ${!joined ? "blurred" : ""}`}>
-                 <Sidebar teams={standup.teams} current={currentTeam} />
+                 <Sidebar teams={team.members} current={currentTeam} />
                  <div className="standup-page__main-view">
                      <LoadingBar
                          allocation={currentTeam.allocationInSeconds}
                          timeLeft={standup.time}
                          backgroundImage={"linear-gradient(to right, rgba(79, 156, 248, 1), rgba(109, 222, 251, 1))"}
                      />
-                     <Typography variant="h3" className="title">{standup.displayName}</Typography>
+                     <Typography variant="h3" className="title">{team.displayName}</Typography>
                      <StandupCurrentSpeaker
                         speaker={currentTeam.speaker}
                         team={currentTeam.name}
@@ -106,14 +113,16 @@ const StandupPage: React.FunctionComponent<IProps & PropsFromState & PropsFromDi
 
 const mapStateToProps = (state: ApplicationState) => (
     {
-      standup: state.standup
+        standup: state.standup,
+        team: state.team
     }
 );
 
 const mapDispatchToProps = (dispatch: Dispatch) => (
   {
     joinStandup: (name: string) => dispatch(actions.joinStandup(name)),
-    leaveStandup: (name: string) => dispatch(actions.leaveStandup(name))
+    leaveStandup: (name: string) => dispatch(actions.leaveStandup(name)),
+    getTeamByName: (name: string) => dispatch(teamActions.getTeamByName(name))
   }
 );
 

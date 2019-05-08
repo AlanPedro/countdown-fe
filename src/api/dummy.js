@@ -15,7 +15,7 @@ const dummyMainStandupParticipants = [
 const dummyMainStandup = {
   id: 0,
   name: "main",
-  displayName: "Access UK Main Dummy Standup",
+  displayName: "Access UK Main Dummy Team",
   teams: dummyMainStandupParticipants
 }
 

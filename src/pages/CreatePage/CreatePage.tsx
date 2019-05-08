@@ -4,12 +4,12 @@ import styled  from 'styled-components';
 import * as H from 'history';
 import Typography from "@material-ui/core/es/Typography/Typography";
 
-import {actions} from "../../ducks/standup";
-import StandupForm from "../../components/StandupForm/StandupForm";
+import {actions} from "../../ducks/team";
+import TeamForm from "../../components/TeamForm/TeamForm";
 import {NO_ERRORS} from "../../config/constants";
 import { RouteComponentProps } from 'react-router';
 import { Dispatch } from 'redux';
-import { SuccessErrorCallback, Standup, Team } from '../../../@types/countdown';
+import { SuccessErrorCallback, Team, TeamMember, TeamDto } from '../../../@types/countdown';
 
 const StyledCreatePage = styled.div`
       width: 100%;
@@ -21,14 +21,18 @@ const StyledCreatePage = styled.div`
       flex-direction: column;
 `;
 
-interface IProps extends RouteComponentProps {
+interface RouterProps {
+    projectName: string;
+}
+
+interface IProps extends RouteComponentProps<RouterProps> {
     history: H.History
 }
 interface PropsFromDispatch {
-    createStandup: (standup: Standup, meta: SuccessErrorCallback) => void;
+    createTeam: (standup: TeamDto, meta: SuccessErrorCallback) => void;
 }
 
-const CreatePage: React.FunctionComponent<IProps & PropsFromDispatch> = ({createStandup, history}) => {
+const CreatePage: React.FunctionComponent<IProps & PropsFromDispatch> = ({createTeam, history}) => {
 
     const [submitting, setSubmitting] = useState(false);
     const [errors, setErrors] = useState(NO_ERRORS);
@@ -45,11 +49,11 @@ const CreatePage: React.FunctionComponent<IProps & PropsFromDispatch> = ({create
     // TODO: change to standup after all 'name' changed to slug/url
     const saveStandup = (standup: any) => {
         setSubmitting(true);
-        const newStandup = {
+        const newStandup: Team = {
             id: 0, // Will be set by the backend
             name: standup.url,
             displayName: standup.displayName,
-            teams: standup.teams.map((t: Team, i: number) => ({
+            members: standup.teams.map((t: TeamMember, i: number) => ({
                 id: i, name: t.name,
                 speaker: t.speaker, allocationInSeconds: t.allocationInSeconds
             }))
@@ -63,13 +67,17 @@ const CreatePage: React.FunctionComponent<IProps & PropsFromDispatch> = ({create
             setSubmitting(false);
             setErrors(err)
         };
-        createStandup(newStandup, { onSuccess, onError })
+        const newTeam = {
+            ...newStandup,
+            teams: newStandup.members
+        }
+        createTeam(newTeam, { onSuccess, onError })
     };
 
     // TODO: Change to HTTP Error Code ENUM
     const getErrors = (errors: number) => {
         if (errors === 422) return "Error parsing standup, ensure all names and speakers are alphanumeric characters and allocation in seconds is a number";
-        if (errors === 409) return "Standup url is short name is taken, try a different name";
+        if (errors === 409) return "Team url is short name is taken, try a different name";
         else return "Unknown error. Contact Alan Hutcheson on Slack for help";
     };
 
@@ -81,8 +89,8 @@ const CreatePage: React.FunctionComponent<IProps & PropsFromDispatch> = ({create
             {errors !== NO_ERRORS && <Typography variant="h6" align="center">
                 {getErrors(errors)}
             </Typography>}
-            <StandupForm
-                onSubmit={(s: Standup) => saveStandup(s)}
+            <TeamForm
+                onSubmit={(s: Team) => saveStandup(s)}
                 submitting={submitting}
                 initialValues={initialValues}
                 isCreating={true}
@@ -93,7 +101,7 @@ const CreatePage: React.FunctionComponent<IProps & PropsFromDispatch> = ({create
 
 const mapDispatchToProps = (dispatch: Dispatch) => (
     {
-        createStandup: (s: Standup, meta: SuccessErrorCallback) => dispatch(actions.createStandup(s, meta)),
+        createTeam: (s: TeamDto, meta: SuccessErrorCallback) => dispatch(actions.createTeam(s, meta)),
     }
 );
 
