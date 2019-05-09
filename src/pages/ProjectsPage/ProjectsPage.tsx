@@ -22,25 +22,26 @@ const ProjectsPage: React.FunctionComponent<PropsFromState & PropsFromDispatch> 
 
     useEffect(() => {
         props.getAllProjects()
-    }, [])
+    }, []);
 
     return (
         <CenteredContent title="Projects">
-                <CountdownList>
-                    {
-                        props.projects.map((p: ProjectNames, index: number) => (
-                            <ListItem key={index} to={`project/${p.name}`}>
-                                <Typography variant="h5" color="inherit">
-                                    {p.displayName}
-                                </Typography>
-                                <img src={NextButton} alt="Next button" style={{ height: "40px", width: "40px"}} />
-                            </ListItem>
-                        ))
-                    }
-                </CountdownList>
+            <CountdownList>
+                {
+                    props.projects.map((p: ProjectNames, index: number) => (
+                        <ListItem key={index} to={`project/${p.name}`}>
+                            <Typography variant="h5" color="inherit">
+                                {p.displayName}
+                            </Typography>
+                            <img src={NextButton} alt="Next button" style={{ height: "40px", width: "40px"}} />
+                        </ListItem>
+                    ))
+                }
+            </CountdownList>
+            <Typography align="center" variant="h5"> Want to add your project? Contact Alan Hutcheson on DD Slack </Typography>
         </CenteredContent>
     )
-}
+};
 
 const mapStateToProps = (state: ApplicationState) => (
     {

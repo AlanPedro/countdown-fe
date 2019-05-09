@@ -53,13 +53,5 @@ const allProj = () => [
     {
         name: "auk",
         displayName: "Access UK"
-    },
-    {
-        name: "eue",
-        displayName: "EU Exit"
-    },
-    {
-        name: "leap",
-        displayName: "Digital Leap"
     }
 ];
