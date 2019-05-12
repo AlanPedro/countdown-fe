@@ -7,6 +7,7 @@ import Button from "@material-ui/core/es/Button";
 import EditableTeam from "../EditableTeam/EditableTeam";
 import FormikFieldInput from "../FormikFieldInput/FormikFieldInput";
 import { TeamMemberWithRandomNumber } from '../../../@types/countdown';
+import {DEFAULT_ID} from '../../config/constants';
 
 const StyledForm = styled(Formik.Form)`
     overflow-x: scroll;
@@ -72,7 +73,7 @@ const TeamForm: React.FunctionComponent<IProps> = ({initialValues, onSubmit, sub
                                     <Button
                                         className="standup-form-add-team"
                                         onClick={() => arrayHelpers.push(
-                                            { name: '', speaker: '', allocationInSeconds: 60}
+                                            { id: DEFAULT_ID, name: '', speaker: '', allocationInSeconds: 60}
                                         )}
                                         variant="contained"
                                         color="default">
